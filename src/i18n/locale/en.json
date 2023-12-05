@@ -1,0 +1,27 @@
+{
+    "setup": {
+        "title": "Setup",
+        "secret": {
+            "title": "Input Secret",
+            "input": "Secret",
+            "done": "Done"
+        },
+        "config-owner": {
+            "title": "Configure Owner",
+            "nickname": "Nickname",
+            "username": "Username",
+            "password": "Password",
+            "password-repeat": "Repeat Password",
+            "proceed": "Proceed",
+            "error": {
+                "required": "* Required",
+                "password-length": "Length in 8 ~ 16",
+                "password-format": "[a-z], [A-Z] and [0-9] should exist",
+                "password-repeat-mismatch": "Both password inputs mismatch"
+            }
+        },
+        "owner": {
+            "title": "Owner"
+        }
+    }
+}

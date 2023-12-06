@@ -8,6 +8,13 @@
         },
         "config-owner": {
             "title": "Configure Owner",
+            "avatar": {
+                "title": "Crop Avatar Image",
+                "action": {
+                    "crop": "Crop",
+                    "cancel": "Cancel"
+                }
+            },
             "nickname": "Nickname",
             "username": "Username",
             "password": "Password",
@@ -18,6 +25,13 @@
                 "password-length": "Length in 8 ~ 16",
                 "password-format": "[a-z], [A-Z] and [0-9] should exist",
                 "password-repeat-mismatch": "Both password inputs mismatch"
+            },
+            "exception": {
+                "forbidden": "Owner has already set.",
+                "internal-server-error": {
+                    "message": "Server internal error occurred.",
+                    "retry": "Retry"
+                }
             }
         },
         "owner": {

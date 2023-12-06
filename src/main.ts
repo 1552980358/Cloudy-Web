@@ -8,6 +8,9 @@ import vuetify from '@/vuetify/vuetify'
 import axiosSetup from '@/axios/axios-setup'
 import 'material-symbols'
 
+// Vue-Advanced-Cropper
+import 'vue-advanced-cropper/dist/style.css'
+
 router.beforeEach(async () => {
     await i18nLoadText()
 })

@@ -22,7 +22,7 @@ const passwordRepeat = ref<string>()
 
 const passwordVisibility = ref(false)
 
-const passwordLengthRegex = /^[a-zA-Z\d]{8,16}/
+const passwordLengthRegex = /^[a-zA-Z\d.!@#$%&*-_]{8,16}/
 const passwordFormatRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+/
 const textFieldRules = {
     required: (text: string) => !!text || t('setup.config-owner.error.required'),

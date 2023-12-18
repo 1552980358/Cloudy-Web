@@ -5,6 +5,7 @@ import {useI18n} from 'vue-i18n'
 import axios from 'axios'
 import axiosAuthorization from '@/axios/axios-authorization'
 import SetupOwnerResponse from './setup-owner-response'
+import UserCredential from '@/storage/UserCredential'
 
 const {t} = useI18n()
 
@@ -17,14 +18,17 @@ const isLoading = ref(false)
 const startLogin = (password: string) => {
     if (!!password && !isLoading.value) {
         isLoading.value = true
-
+        const username = ownerMetadata.value.username
         const postBody = {
-            username: ownerMetadata.value.username,
+            username: username,
             password: password
         }
         axios.post('auth', postBody)
-            .then((response) => {
-                axiosAuthorization(response.data)
+            .then((response) => response.data)
+            .then((jwt) => {
+                axiosAuthorization(jwt)
+                // Save to local storage
+                UserCredential.write(jwt, username, password)
                 // TODO: To be implemented
             })
             .catch(() => {

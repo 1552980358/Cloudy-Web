@@ -25,7 +25,7 @@ const startVerifySecret = (secret: string) => {
         isLoading.value = true
         axios.get(`setup?secret=${secret}`)
             .then((axiosResponse: AxiosResponse) => axiosResponse.data as SetupSecretResponse)
-            .then((setupSecretResponse: SetupSecretResponse) => {
+            .then((setupSecretResponse) => {
                 emits(
                     'update:setup-step',
                     setupSecretResponse.has_owner ? SetupStep.Owner : SetupStep.ConfigOwner
@@ -43,7 +43,8 @@ const startVerifySecret = (secret: string) => {
 
     <v-card-text>
 
-        <v-text-field :clearable="true"
+        <v-text-field @keyup.enter="startVerifySecret(secret)"
+                      :clearable="true"
                       :label="t('setup.secret.input')"
                       :disabled="isLoading"
                       hide-details="auto"

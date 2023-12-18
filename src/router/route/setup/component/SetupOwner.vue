@@ -14,13 +14,13 @@ const password = ref<string>()
 
 const isLoading = ref(false)
 
-const login = () => {
-    if (!isLoading.value) {
+const startLogin = (password: string) => {
+    if (!!password && !isLoading.value) {
         isLoading.value = true
 
         const postBody = {
             username: ownerMetadata.value.username,
-            password: password.value
+            password: password
         }
         axios.post('auth', postBody)
             .then((response) => {
@@ -81,6 +81,7 @@ axios.get('setup/owner')
     <v-card-text>
 
         <v-text-field v-model="password"
+                      @keyup.enter="startLogin(password)"
                       :disabled="isLoading"
                       :label="t('setup.owner.password')"
                       class="mt-2 pb-0"
@@ -100,7 +101,7 @@ axios.get('setup/owner')
 
         <v-spacer></v-spacer>
 
-        <v-btn @click="login"
+        <v-btn @click="startLogin(password)"
                :disabled="!password || isLoading"
                :loading="isLoading"
                color="primary"

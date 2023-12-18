@@ -7,6 +7,7 @@ import SetupConfigOwner from '@/router/route/setup/component/SetupConfigOwner.vu
 import {useI18n} from 'vue-i18n'
 import {useTheme} from 'vuetify'
 import {DarkTheme, LightTheme} from '@/vuetify/vuetify'
+import SetupOwner from '@/router/route/setup/component/SetupOwner.vue'
 const {t} = useI18n()
 
 const theme = useTheme()
@@ -79,6 +80,12 @@ const secret = ref()
                         <setup-config-owner v-model:secret="secret"
                                             v-model:setup-step="setupStep">
                         </setup-config-owner>
+
+                    </v-window-item>
+
+                    <v-window-item :key="SetupStep.Owner.step">
+
+                        <setup-owner></setup-owner>
 
                     </v-window-item>
 

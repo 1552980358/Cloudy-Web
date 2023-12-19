@@ -3,7 +3,7 @@
 import {ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import axios from 'axios'
-import axiosAuthorization from '@/axios/axios-authorization'
+import AxiosAuthorization from '@/axios/axios-authorization'
 import SetupOwnerResponse from './setup-owner-response'
 import UserCredential from '@/storage/UserCredential'
 
@@ -26,7 +26,7 @@ const startLogin = (password: string) => {
         axios.post('auth', postBody)
             .then((response) => response.data)
             .then((jwt) => {
-                axiosAuthorization(jwt)
+                AxiosAuthorization.setJWT(jwt)
                 // Save to local storage
                 UserCredential.write(jwt, username, password)
                 // TODO: To be implemented

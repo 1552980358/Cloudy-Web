@@ -1,8 +1,12 @@
-import {readStorage, removeStorage, writeStorage} from '@/storage/LocalStorage'
+import {hasStoredKey, readStorage, removeStorage, writeStorage} from '@/storage/LocalStorage'
 
 export default class UserCredential {
 
     private static readonly KEY = 'UserCredential'
+
+    static exists(): boolean {
+        return hasStoredKey(this.KEY)
+    }
 
     static read(): UserCredential {
         const rawData = readStorage(this.KEY)

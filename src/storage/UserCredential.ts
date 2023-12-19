@@ -11,7 +11,7 @@ export default class UserCredential {
                 return JSON.parse(atob(rawData))
             } catch (e) {
                 // Remove wrong data
-                this.remove()
+                this.clear()
             }
         }
         return null
@@ -23,7 +23,7 @@ export default class UserCredential {
         writeStorage(this.KEY, base64)
     }
 
-    private static remove() {
+    static clear() {
         removeStorage(this.KEY)
     }
 

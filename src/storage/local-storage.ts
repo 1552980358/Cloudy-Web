@@ -1,5 +1,10 @@
 export default abstract class LocalStorage<T> {
 
+    /**
+     * Get key for [LocalStorage]
+     * @protected
+     * @return key
+     */
     protected abstract getKey(): string
 
     /**

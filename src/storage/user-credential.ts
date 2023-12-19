@@ -1,8 +1,9 @@
-import LocalStorage from '@/storage/LocalStorage'
+import LocalStorage from '@/storage/local-storage'
 
 class UserCredentialStorage extends LocalStorage<UserCredential> {
 
     private static readonly Key = 'UserCredential'
+
     protected getKey(): string {
         return UserCredentialStorage.Key
     }
@@ -19,7 +20,7 @@ class UserCredentialStorage extends LocalStorage<UserCredential> {
         return null
     }
 
-    writeObject(value: UserCredential) {
+    override writeObject(value: UserCredential) {
         const base64 = btoa(JSON.stringify(value))
         super.write(base64)
     }
@@ -30,28 +31,28 @@ const userCredentialStorage = new UserCredentialStorage()
 
 export default class UserCredential {
 
-    static exists(): boolean {
+    public static exists(): boolean {
         return userCredentialStorage.exists()
     }
 
-    static read(): UserCredential {
+    public static read(): UserCredential {
         return userCredentialStorage.readObject()
     }
 
-    static write(jwt: string, username: string, password: string) {
+    public static write(jwt: string, username: string, password: string) {
         const userCredential = new UserCredential(jwt, username, password)
         userCredentialStorage.writeObject(userCredential)
     }
 
-    static clear() {
+    public static clear() {
         userCredentialStorage.clear()
     }
 
-    jwt: string
-    username: string
-    password: string
+    public jwt: string
+    public username: string
+    public password: string
 
-    constructor(jwt: string, username: string, password: string) {
+    public constructor(jwt: string, username: string, password: string) {
         this.jwt = jwt
         this.username = username
         this.password = password

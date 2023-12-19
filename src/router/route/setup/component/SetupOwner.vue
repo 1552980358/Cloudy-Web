@@ -5,7 +5,7 @@ import {useI18n} from 'vue-i18n'
 import axios from 'axios'
 import AxiosAuthorization from '@/axios/axios-authorization'
 import SetupOwnerResponse from './setup-owner-response'
-import UserCredential from '@/storage/UserCredential'
+import UserCredential from '@/storage/user-credential'
 
 const {t} = useI18n()
 

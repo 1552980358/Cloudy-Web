@@ -1,5 +1,5 @@
 import axios from 'axios'
-import UserCredential from '@/storage/UserCredential'
+import UserCredential from '@/storage/user-credential'
 
 class AxiosAuthorization {
 

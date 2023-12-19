@@ -1,4 +1,8 @@
-export const readStorage = (key: string): string => {
+export const hasStoredKey = (key: string): boolean => {
+    return localStorage.hasOwnProperty(key)
+}
+
+export const readStorage = (key: string): string | null => {
     return localStorage.getItem(key)
 }
 

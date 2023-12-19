@@ -1,15 +1,55 @@
-export const hasStoredKey = (key: string): boolean => {
-    return localStorage.hasOwnProperty(key)
-}
+export default abstract class LocalStorage<T> {
 
-export const readStorage = (key: string): string | null => {
-    return localStorage.getItem(key)
-}
+    protected abstract getKey(): string
 
-export const writeStorage = (key: string, value: string) => {
-    localStorage.setItem(key, value)
-}
+    /**
+     * Check if item exists in [LocalStorage]
+     */
+    public exists(): boolean {
+        return localStorage.hasOwnProperty(this.getKey())
+    }
 
-export const removeStorage = (key: string) => {
-    localStorage.removeItem(key)
+    /**
+     * Read string from [LocalStorage]
+     **/
+    public read(): string | null {
+        return localStorage.getItem(this.getKey())
+    }
+
+    /**
+     * Read string from [LocalStorage]
+     * @return T or null
+     **/
+    public readObject(): T | null {
+        return this.readObjectImpl(this.read())
+    }
+    /**
+     * Implementation of [readObject] that convert string to [T]
+     * @param storageData
+     * @return T or null
+     */
+    protected abstract readObjectImpl(storageData: string | null): T | null
+
+    /**
+     * Write string to [LocalStorage]
+     * @param value
+     */
+    public write(value: string) {
+        localStorage.setItem(this.getKey(), value)
+    }
+
+    /**
+     * Write [T] to [LocalStorage]
+     * @param value
+     * @return T or null
+     */
+    public abstract writeObject(value: T): void
+
+    /**
+     * Remove item from [LocalStorage]
+     */
+    public clear() {
+        localStorage.removeItem(this.getKey())
+    }
+
 }

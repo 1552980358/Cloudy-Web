@@ -3,27 +3,27 @@ import {ThemeDefinition} from 'vuetify'
 const light: ThemeDefinition = {
     dark: false,
     colors: {
-        'primary': '#2D5DA7',
+        'primary': '#3E5F90',
         'on-primary': '#FFF',
-        'primary-container': '#D7E2FF',
-        'on-primary-container': '#001B3F',
+        'primary-container': '#D5E3FF',
+        'on-primary-container': '#001B3C',
 
-        'secondary': '#565E71',
+        'secondary': '#555F71',
         'on-secondary': '#FFF',
-        'secondary-container': '#DAE2F9',
-        'on-secondary-container': '#131c2b',
+        'secondary-container': '#D9E3F8',
+        'on-secondary-container': '#121C2B',
 
-        'info': '#705574',
+        'info': '#6F5675',
         'on-info': '#FFF',
-        'info-container': '#FAd8FD',
-        'on-info-container': '#29132E',
+        'info-container': '#F8D8FE',
+        'on-info-container': '#28132F',
 
-        'background': '#FDFBFF',
-        'on-background': '#1A1B1F',
+        'background': '#F9F9FF',
+        'on-background': '#191C20',
 
-        'surface': '#FAf9FD',
-        'on-surface': '#1A1B1F',
-        'surface-container': '#EFEDF1',
+        'surface': '#F9F9FF',
+        'on-surface': '#191C20',
+        'surface-container': '#EDEDF4',
 
         // success: string,
         // 'on-success': string,
@@ -33,7 +33,7 @@ const light: ThemeDefinition = {
 
         'error': '#BA1A1A',
         'on-error': '#FFF',
-        'error-container': '#ffDAD6',
+        'error-container': '#FFDAD6',
         'on-error-container': '#410002',
     }
 }

@@ -34,32 +34,33 @@ const secret = ref()
 </script>
 
 <template>
-    <v-app>
 
-        <v-app-bar color="primary">
+    <v-app-bar color="primary">
 
-            <v-btn icon>
-                <span class="material-symbols-rounded">settings</span>
-            </v-btn>
+        <v-btn icon>
+            <span class="material-symbols-rounded">settings</span>
+        </v-btn>
 
-            <v-app-bar-title>
-                {{ t('setup.title') }}
-            </v-app-bar-title>
+        <v-app-bar-title class="unselectable">
+            {{ t('setup.title') }}
+        </v-app-bar-title>
 
-            <v-btn @click="triggerTheme"
-                   icon>
+        <v-btn @click="triggerTheme"
+               icon>
                 <span class="material-symbols-rounded">
                     {{ theme.global.current.value.dark ? 'light_mode' : 'dark_mode' }}
                 </span>
-            </v-btn>
+        </v-btn>
 
-        </v-app-bar>
+    </v-app-bar>
 
-        <v-container class="d-flex h-100">
+    <v-main>
+
+        <v-container class="d-flex h-100" fluid=true>
 
             <v-card class="ma-auto w-50" max-width="600">
 
-                <v-card-item>
+                <v-card-item class="unselectable">
                     <v-card-title>{{ t(`setup.${setupStep.name}.title`) }}</v-card-title>
                 </v-card-item>
 
@@ -95,7 +96,8 @@ const secret = ref()
 
         </v-container>
 
-    </v-app>
+    </v-main>
+
 </template>
 
 <style scoped>

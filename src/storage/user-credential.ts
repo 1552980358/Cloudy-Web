@@ -11,7 +11,8 @@ class UserCredentialStorage extends LocalStorage<UserCredential> {
     protected override readObjectImpl(storageData: string | null): UserCredential | null {
         if (!!storageData) {
             try {
-                return JSON.parse(atob(storageData))
+                const userCredential = JSON.parse(atob(storageData))
+                return Object.assign(new UserCredential(), userCredential)
             } catch (e) {
                 // Remove wrong data
                 super.clear()
@@ -31,27 +32,36 @@ const userCredentialStorage = new UserCredentialStorage()
 
 export default class UserCredential {
 
-    public static read(): UserCredential {
+    public static read(): UserCredential | null {
         return userCredentialStorage.readObject()
     }
 
     public static write(jwt: string, username: string, password: string) {
-        const userCredential = new UserCredential(jwt, username, password)
+        const userCredential = UserCredential.ofToken(jwt, username, password)
         userCredentialStorage.writeObject(userCredential)
     }
 
-    public static clear() {
-        userCredentialStorage.clear()
+    public static ofToken(jwt: string | null = null, username: string, password: string): UserCredential {
+        const userCredential = new UserCredential()
+        userCredential.token = jwt
+        userCredential.username = username
+        userCredential.password = password
+        return userCredential
     }
 
-    public jwt: string
+    public token: string | null
     public username: string
     public password: string
 
-    public constructor(jwt: string, username: string, password: string) {
-        this.jwt = jwt
-        this.username = username
-        this.password = password
+    public constructor() {}
+
+    public removeToken() {
+        this.token = null
+        userCredentialStorage.writeObject(this)
+    }
+
+    public toHeaderOption(): { headers: { Authorization: string } } {
+        return { headers: { Authorization: `JWT ${this.token}` } }
     }
 
 }

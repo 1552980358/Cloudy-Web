@@ -26,7 +26,7 @@ const startLogin = (password: string) => {
         axios.post('auth', postBody)
             .then((response) => response.data)
             .then((jwt) => {
-                AxiosAuthorization.setJWT(jwt)
+                AxiosAuthorization.setToken(jwt)
                 // Save to local storage
                 UserCredential.write(jwt, username, password)
                 // TODO: To be implemented
@@ -68,7 +68,7 @@ axios.get('setup/owner')
         <span v-else
               class="material-symbols-rounded w-100 h-100 unselectable text-black">
                     account_circle
-                </span>
+        </span>
 
     </v-avatar>
 

@@ -31,10 +31,6 @@ const userCredentialStorage = new UserCredentialStorage()
 
 export default class UserCredential {
 
-    public static exists(): boolean {
-        return userCredentialStorage.exists()
-    }
-
     public static read(): UserCredential {
         return userCredentialStorage.readObject()
     }

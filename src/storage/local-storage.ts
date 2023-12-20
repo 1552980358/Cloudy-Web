@@ -8,13 +8,6 @@ export default abstract class LocalStorage<T> {
     protected abstract getKey(): string
 
     /**
-     * Check if item exists in [LocalStorage]
-     */
-    public exists(): boolean {
-        return localStorage.hasOwnProperty(this.getKey())
-    }
-
-    /**
      * Read string from [LocalStorage]
      **/
     public read(): string | null {

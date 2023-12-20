@@ -10,7 +10,9 @@ import 'material-symbols'
 
 // Vue-Advanced-Cropper
 import 'vue-advanced-cropper/dist/style.css'
+
 import '@/assets/css/common.css'
+import '@/assets/css/index.css'
 
 router.beforeEach(async () => {
     await i18nLoadText()

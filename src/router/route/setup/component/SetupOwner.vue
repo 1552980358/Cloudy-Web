@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref} from 'vue'
+import {computed, reactive} from 'vue'
 import {useI18n} from 'vue-i18n'
 import axios from 'axios'
 import AxiosAuthorization from '@/axios/axios-authorization'
@@ -9,16 +9,39 @@ import UserCredential from '@/storage/user-credential'
 
 const {t} = useI18n()
 
-const ownerMetadata = ref<SetupOwnerResponse>()
-const avatar = ref<string>()
-const password = ref<string>()
+const uiState = reactive({
+    isLoading: false,
+    defaultAvatar: false,
 
-const isLoading = ref(false)
+    /** Errors **/
+    errorUnauthorized: false,
+})
 
-const startLogin = (password: string) => {
-    if (!!password && !isLoading.value) {
-        isLoading.value = true
-        const username = ownerMetadata.value.username
+const ownerCredential = reactive({
+    metadata: null,
+    password: null,
+})
+
+const isLoading = computed(() => uiState.isLoading)
+const defaultAvatar = computed({
+    set: (value) => uiState.defaultAvatar = value,
+    get: () => uiState.defaultAvatar,
+})
+const ownerMetadata = computed(() => ownerCredential.metadata as SetupOwnerResponse)
+const password = computed({
+    set: (value) => ownerCredential.password = value,
+    get: () => ownerCredential.password,
+})
+const errorUnauthorized = computed({
+    set: (value) => uiState.errorUnauthorized = value,
+    get: () => uiState.errorUnauthorized,
+})
+
+const startLogin = () => {
+    const password = ownerCredential.password
+    if (!!password && !uiState.isLoading) {
+        uiState.isLoading = true
+        const username = ownerCredential.metadata.username
         const postBody = {
             username: username,
             password: password
@@ -32,45 +55,46 @@ const startLogin = (password: string) => {
                 // TODO: To be implemented
             })
             .catch(() => {
-                exceptionUnauthorized.value = true
-                isLoading.value = false
+                uiState.errorUnauthorized = true
+                uiState.isLoading = false
             })
     }
 }
 
-const exceptionUnauthorized = ref(false)
-
 axios.get('setup/owner')
     .then((response) => response.data as SetupOwnerResponse)
     .then((setupOwnerResponse) => {
-        avatar.value = `${axios.defaults.baseURL}account/${setupOwnerResponse.id}/avatar`
-        ownerMetadata.value = setupOwnerResponse
+        ownerCredential.metadata = setupOwnerResponse
     })
 
 </script>
 
 <template>
 
-    <v-snackbar v-model="exceptionUnauthorized"
+    <v-snackbar v-model="errorUnauthorized"
                 color="error-container">
         <span class="text-error">
             {{ t('setup.owner.exception.unauthorized') }}
         </span>
     </v-snackbar>
 
-    <v-avatar class="setup-owner-avatar position-relative text-center"
-              size="84">
+    <div class="d-flex justify-center">
 
-        <img v-if="!!ownerMetadata"
-             :src="avatar"
-             alt=""
-             class="w-100 h-100">
-        <span v-else
-              class="material-symbols-rounded w-100 h-100 unselectable text-black">
-                    account_circle
-        </span>
+        <v-avatar class="setup-owner-avatar" size="84">
 
-    </v-avatar>
+            <img v-if="!!ownerMetadata && !defaultAvatar"
+                 :src="`${axios.defaults.baseURL}account/${ownerMetadata.id}/avatar`"
+                 @error="defaultAvatar = true"
+                 alt=""
+                 class="w-100 h-100">
+            <span v-else
+                  class="material-symbols-rounded w-100 h-100 unselectable text-black">
+                account_circle
+            </span>
+
+        </v-avatar>
+
+    </div>
 
     <v-card-title v-if="!!ownerMetadata" class="text-center">
 
@@ -85,7 +109,7 @@ axios.get('setup/owner')
     <v-card-text>
 
         <v-text-field v-model="password"
-                      @keyup.enter="startLogin(password)"
+                      @keyup.enter="startLogin"
                       :disabled="isLoading"
                       :label="t('setup.owner.password')"
                       class="mt-2 pb-0"
@@ -105,7 +129,7 @@ axios.get('setup/owner')
 
         <v-spacer></v-spacer>
 
-        <v-btn @click="startLogin(password)"
+        <v-btn @click="startLogin"
                :disabled="!password || isLoading"
                :loading="isLoading"
                color="primary"
@@ -118,11 +142,6 @@ axios.get('setup/owner')
 </template>
 
 <style scoped>
-
-.setup-owner-avatar {
-    left: 50%;
-    transform: translateX(-50%);
-}
 
 .setup-owner-avatar span {
     font-size: 84px;

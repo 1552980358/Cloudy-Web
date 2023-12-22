@@ -1,8 +1,9 @@
 <script setup lang="ts">
+
 import {computed, ref} from 'vue'
 import axios, {AxiosResponse} from 'axios'
 import {useI18n} from 'vue-i18n'
-import SetupSecretResponse from '@/router/route/setup/component/setup-secret-response'
+import SetupSecretResponse from '@/router/route/setup/component/secret/setup-secret-response'
 import SetupStep from '@/router/route/setup/setup-step'
 
 const {t} = useI18n()

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue'
-import SetupStep from '@/router/route/setup/setup-step'
-import SetupSecret from '@/router/route/setup/component/SetupSecret.vue'
-import SetupConfigOwner from '@/router/route/setup/component/SetupConfigOwner.vue'
 
-import {useI18n} from 'vue-i18n'
+import {computed, ref} from 'vue'
 import {useTheme} from 'vuetify'
 import {DarkTheme, LightTheme} from '@/vuetify/vuetify'
-import SetupOwner from '@/router/route/setup/component/SetupOwner.vue'
+import {useI18n} from 'vue-i18n'
+import SetupStep from './setup-step'
+import SetupSecret from './component/secret/SetupSecret.vue'
+import SetupConfigOwner from './component/config-owner/SetupConfigOwner.vue'
+import SetupOwner from './component/owner/SetupOwner.vue'
+
 const {t} = useI18n()
 
 const theme = useTheme()
@@ -56,7 +57,7 @@ const secret = ref()
 
     <v-main>
 
-        <v-container class="d-flex h-100" fluid=true>
+        <v-container class="d-flex h-100">
 
             <v-card class="ma-auto w-50" max-width="600">
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue'
+
+import {computed, reactive, ref, watchEffect} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {text} from 'stream/consumers'
 import axios from 'axios'
@@ -15,10 +16,20 @@ const emits = defineEmits(
     ['update:secret', 'update:setup-step']
 )
 
-const nickname = ref<string>()
-const username = ref<string>()
-const password = ref<string>()
-const passwordRepeat = ref<string>()
+const uiState = reactive({
+    isLoading: false,
+
+    /** Exceptions **/
+    exceptionForbidden: false,
+    exceptionServerInternalError: false,
+})
+
+const fields = reactive({
+    nickname: null,
+    username: null,
+    password: null,
+    passwordRepeat: null,
+})
 
 const passwordVisibility = ref(false)
 
@@ -33,31 +44,32 @@ const textFieldRules = {
         return passwordFormatRegex.test(text) || t('setup.config-owner.error.password-format')
     },
     passwordRepeat: (text: string) => {
-        return text == password.value || t('setup.config-owner.error.password-repeat-mismatch')
+        return text == fields.password || t('setup.config-owner.error.password-repeat-mismatch')
     }
 }
 
 const avatarInput = ref()
-const avatar = ref({
+const avatar = reactive({
     file: null,
     image: null,
 })
-const cropAvatarDialog = ref(false)
+
+const cropAvatarDialog = reactive({
+    enable: false,
+    preview: {
+        coordinates: null,
+        image: null,
+    }
+})
+
 const onImageSelect = (event: { target: { files: File[] } }) => {
     let file = URL.createObjectURL(event.target.files[0])
     avatarInput.value.value = null;
-    avatar.value = {
-        file: file,
-        image: null,
-    }
-    cropAvatarDialog.value = true
+    avatar.file = file
+    cropAvatarDialog.enable = true
 }
-const cropAvatarPreview = ref({
-    image: null,
-    coordinates: null,
-})
 const onCropPreviewChange = ({coordinates, image}) => {
-    cropAvatarPreview.value = {
+    cropAvatarDialog.preview = {
         image: image,
         coordinates: coordinates,
     }
@@ -65,30 +77,27 @@ const onCropPreviewChange = ({coordinates, image}) => {
 const avatarCropper = ref()
 const cropAvatar = () => {
     const { canvas } = avatarCropper.value.getResult()
-    avatar.value = {
-        file: null,
-        image: canvas.toDataURL(),
-    }
-    cropAvatarDialog.value = false
+    avatar.image = canvas.toDataURL()
+    avatar.file = null
+    cropAvatarDialog.enable = false
 }
 const validFields = computed(() => {
-    let passwordText = password.value
-    return !!username.value
-        && !!passwordText
-        && passwordLengthRegex.test(passwordText)
-        && passwordFormatRegex.test(passwordText)
-        && (password.value == passwordRepeat.value)
-        && !!nickname.value
+    const password = fields.password
+    return !!fields.username
+        && !!password
+        && passwordLengthRegex.test(password)
+        && passwordFormatRegex.test(password)
+        && (password == fields.passwordRepeat)
+        && !!fields.nickname
 })
-const isLoading = ref(false)
 const configOwner = (secret: string) => {
-    if (validFields.value && !isLoading.value) {
-        isLoading.value = true
+    if (validFields.value && !uiState.isLoading) {
+        uiState.isLoading = true
         let post_body = {
-            username: username.value,
-            password: password.value,
-            nickname: nickname.value,
-            avatar: avatar.value.image,
+            username: fields.username,
+            password: fields.password,
+            nickname: fields.nickname,
+            avatar: avatar.image,
             role: 'owner'
         }
         axios.post(`setup/owner?secret=${secret}`, post_body)
@@ -104,18 +113,18 @@ const configOwner = (secret: string) => {
                     }
                     case 403: {
                         // Forbidden
-                        watch(exceptionForbidden, (isHidden: boolean) => {
-                            if (isHidden) {
+                        uiState.exceptionForbidden = true
+                        watchEffect(() => {
+                            if (!uiState.exceptionForbidden) {
                                 emits('update:setup-step', SetupStep.Owner)
                             }
                         })
-                        exceptionForbidden.value = true
                         break
                     }
                     case 500: {
                         // Internal Server Error
-                        exceptionServerInternalError.value = true
-                        isLoading.value = false
+                        uiState.exceptionServerInternalError = true
+                        uiState.isLoading = false
                         break
                     }
                 }
@@ -123,14 +132,11 @@ const configOwner = (secret: string) => {
     }
 }
 
-const exceptionForbidden = ref(false)
-const exceptionServerInternalError = ref(false)
-
 </script>
 
 <template>
 
-    <v-snackbar v-model="exceptionForbidden"
+    <v-snackbar v-model="uiState.exceptionForbidden"
                 color="error-container">
 
         <span class="text-error">
@@ -139,7 +145,7 @@ const exceptionServerInternalError = ref(false)
 
     </v-snackbar>
 
-    <v-snackbar v-model="exceptionServerInternalError"
+    <v-snackbar v-model="uiState.exceptionServerInternalError"
                 color="error-container">
 
         <span class="text-error">
@@ -175,7 +181,6 @@ const exceptionServerInternalError = ref(false)
                          :src="avatar.image"
                          alt=""
                          class="w-100 h-100">
-
                     <span v-else
                           class="material-symbols-rounded text-black w-100 h-100">
                         account_circle
@@ -187,14 +192,11 @@ const exceptionServerInternalError = ref(false)
 
             <v-card-actions class="d-flex justify-center">
 
-                <v-btn v-if="!!avatar.image" icon variant="flat">
-                    <span class="material-symbols-rounded">delete</span>
-                </v-btn>
-
                 <v-btn @click="avatarInput.click()" icon size="small" variant="flat">
+
                     <span class="material-symbols-rounded">upload</span>
 
-                    <v-dialog v-model="cropAvatarDialog"
+                    <v-dialog v-model="cropAvatarDialog.enable"
                               width="720">
 
                         <v-card>
@@ -206,6 +208,7 @@ const exceptionServerInternalError = ref(false)
                             <v-card-text>
 
                                 <cropper @change="onCropPreviewChange"
+                                         :debounce="false"
                                          :src="avatar.file"
                                          :stencil-component="CircleStencil"
                                          class="w-100 h-auto"
@@ -216,14 +219,14 @@ const exceptionServerInternalError = ref(false)
 
                                     <preview :width="120"
                                              :height="120"
-                                             :image="cropAvatarPreview.image"
-                                             :coordinates="cropAvatarPreview.coordinates">
+                                             :image="cropAvatarDialog.preview.image"
+                                             :coordinates="cropAvatarDialog.preview.coordinates">
                                     </preview>
 
                                     <v-avatar class="ms-2" size="120">
 
-                                        <preview :image="cropAvatarPreview.image"
-                                                 :coordinates="cropAvatarPreview.coordinates"
+                                        <preview :image="cropAvatarDialog.preview.image"
+                                                 :coordinates="cropAvatarDialog.preview.coordinates"
                                                  :height="120"
                                                  :width="120">
                                         </preview>
@@ -232,8 +235,8 @@ const exceptionServerInternalError = ref(false)
 
                                     <v-avatar class="ms-2" size="96">
 
-                                        <preview :image="cropAvatarPreview.image"
-                                                 :coordinates="cropAvatarPreview.coordinates"
+                                        <preview :image="cropAvatarDialog.preview.image"
+                                                 :coordinates="cropAvatarDialog.preview.coordinates"
                                                  :height="96"
                                                  :width="96">
                                         </preview>
@@ -242,8 +245,8 @@ const exceptionServerInternalError = ref(false)
 
                                     <v-avatar class="ms-2" size="72">
 
-                                        <preview :image="cropAvatarPreview.image"
-                                                 :coordinates="cropAvatarPreview.coordinates"
+                                        <preview :image="cropAvatarDialog.preview.image"
+                                                 :coordinates="cropAvatarDialog.preview.coordinates"
                                                  :height="72"
                                                  :width="72">
                                         </preview>
@@ -260,7 +263,7 @@ const exceptionServerInternalError = ref(false)
 
                                 <v-spacer></v-spacer>
 
-                                <v-btn @click="cropAvatarDialog = false">
+                                <v-btn @click="cropAvatarDialog.enable = false">
                                     {{ t('setup.config-owner.avatar.action.cancel') }}
                                 </v-btn>
 
@@ -278,18 +281,22 @@ const exceptionServerInternalError = ref(false)
 
                 </v-btn>
 
+                <v-btn v-if="!!avatar.image" icon size="small" variant="flat">
+                    <span class="material-symbols-rounded">delete</span>
+                </v-btn>
+
             </v-card-actions>
 
         </v-card>
 
         <v-text-field :clearable="true"
-                      :disabled="isLoading"
+                      :disabled="uiState.isLoading"
                       :label="t('setup.config-owner.nickname')"
                       :rules="[textFieldRules.required]"
                       class="mt-2"
                       hide-details="auto"
                       type="text"
-                      v-model="nickname">
+                      v-model="fields.nickname">
 
             <template v-slot:prepend-inner>
                 <span class="material-symbols-outlined">chat_bubble</span>
@@ -298,10 +305,10 @@ const exceptionServerInternalError = ref(false)
         </v-text-field>
 
         <v-text-field :clearable="true"
-                      :disabled="isLoading"
+                      :disabled="uiState.isLoading"
                       :label="t('setup.config-owner.username')"
                       :rules="[textFieldRules.required]"
-                      v-model="username"
+                      v-model="fields.username"
                       class="mt-2"
                       hide-details="auto"
                       type="text">
@@ -313,11 +320,11 @@ const exceptionServerInternalError = ref(false)
         </v-text-field>
 
         <v-text-field :clearable="true"
-                      :disabled="isLoading"
+                      :disabled="uiState.isLoading"
                       :label="t('setup.config-owner.password')"
                       :rules="[textFieldRules.required, textFieldRules.passwordLength, textFieldRules.passwordFormat]"
                       :type="passwordVisibility ? 'text' : 'password'"
-                      v-model="password"
+                      v-model="fields.password"
                       class="mt-2"
                       hide-details="auto">
 
@@ -341,10 +348,10 @@ const exceptionServerInternalError = ref(false)
         </v-text-field>
 
         <v-text-field :clearable="true"
-                      :disabled="isLoading"
+                      :disabled="uiState.isLoading"
                       :label="t('setup.config-owner.password-repeat')"
                       :rules="[textFieldRules.required, textFieldRules.passwordRepeat]"
-                      v-model="passwordRepeat"
+                      v-model="fields.passwordRepeat"
                       class="mt-2"
                       hide-details="auto"
                       type="password">
@@ -364,8 +371,8 @@ const exceptionServerInternalError = ref(false)
         <v-spacer></v-spacer>
 
         <v-btn @click="configOwner(secret)"
-               :disabled="!validFields || isLoading"
-               :loading="isLoading"
+               :disabled="!validFields || uiState.isLoading"
+               :loading="uiState.isLoading"
                color="primary"
                variant="flat">
 

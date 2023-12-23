@@ -19,18 +19,30 @@
             "username": "Username",
             "password": "Password",
             "password-repeat": "Repeat Password",
+            "validate": {
+                "common": {
+                    "required": "* Required"
+                },
+                "password": {
+                    "length": "Length in 8 ~ 16",
+                    "format": "[a-z], [A-Z] and [0-9] should exist",
+                    "repeat-mismatch": "Both password inputs mismatch"
+                },
+                "password-repeat": {
+                    "mismatch": "Both password inputs mismatch"
+                }
+            },
             "proceed": "Proceed",
             "error": {
-                "required": "* Required",
-                "password-length": "Length in 8 ~ 16",
-                "password-format": "[a-z], [A-Z] and [0-9] should exist",
-                "password-repeat-mismatch": "Both password inputs mismatch"
-            },
-            "exception": {
-                "forbidden": "Owner has already set.",
-                "internal-server-error": {
-                    "message": "Server internal error occurred.",
-                    "retry": "Retry"
+                "request": {
+                    "connection": "Connection error occurred."
+                },
+                "response": {
+                    "forbidden": "Owner has already set.",
+                    "internal-server-error": {
+                        "message": "Server internal error occurred.",
+                        "retry": "Retry"
+                    }
                 }
             }
         },
@@ -42,5 +54,8 @@
                 "unauthorized": "Invalid password."
             }
         }
+    },
+    "index": {
+        "welcome-back": "WELCOME BACK"
     }
 }

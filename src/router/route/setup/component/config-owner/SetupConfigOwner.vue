@@ -19,9 +19,16 @@ const emits = defineEmits(
 const uiState = reactive({
     isLoading: false,
 
-    /** Exceptions **/
-    exceptionForbidden: false,
-    exceptionServerInternalError: false,
+    /** Errors **/
+    error: {
+        request: {
+            connection: false
+        },
+        response: {
+            forbidden: false,
+            serverInternalError: false,
+        },
+    }
 })
 
 const fields = reactive({
@@ -36,15 +43,15 @@ const passwordVisibility = ref(false)
 const passwordLengthRegex = /^[a-zA-Z\d.!@#$%&*-_]{8,16}/
 const passwordFormatRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+/
 const textFieldRules = {
-    required: (text: string) => !!text || t('setup.config-owner.error.required'),
+    required: (text: string) => !!text || t('setup.config-owner.validate.common.required'),
     passwordLength: (text: string) => {
-        return passwordLengthRegex.test(text) || t('setup.config-owner.error.password-length')
+        return passwordLengthRegex.test(text) || t('setup.config-owner.validate.password.length')
     },
     passwordFormat: (text: string) => {
-        return passwordFormatRegex.test(text) || t('setup.config-owner.error.password-format')
+        return passwordFormatRegex.test(text) || t('setup.config-owner.validate.password.format')
     },
     passwordRepeat: (text: string) => {
-        return text == fields.password || t('setup.config-owner.error.password-repeat-mismatch')
+        return text == fields.password || t('setup.config-owner.validate.password-repeat.mismatch')
     }
 }
 
@@ -105,27 +112,33 @@ const configOwner = (secret: string) => {
                 emits('update:setup-step', SetupStep.Owner)
             })
             .catch((error) => {
-                switch (error.response.status) {
-                    case 401: {
-                        // Unauthorized
-                        emits('update:setup-step', SetupStep.Secret)
-                        break
-                    }
-                    case 403: {
-                        // Forbidden
-                        uiState.exceptionForbidden = true
-                        watchEffect(() => {
-                            if (!uiState.exceptionForbidden) {
-                                emits('update:setup-step', SetupStep.Owner)
-                            }
-                        })
-                        break
-                    }
-                    case 500: {
-                        // Internal Server Error
-                        uiState.exceptionServerInternalError = true
-                        uiState.isLoading = false
-                        break
+                if (!error.response) {
+                    uiState.error.request.connection = true
+                    uiState.isLoading = false
+                } else {
+                    switch (error.response.status) {
+                        case 401: {
+                            // Unauthorized
+                            emits('update:setup-step', SetupStep.Secret)
+                            break
+                        }
+                        case 403: {
+                            // Forbidden
+                            uiState.error.response.forbidden = true
+                            const unwatch = watchEffect(() => {
+                                if (!uiState.error.response.forbidden) {
+                                    unwatch()
+                                    emits('update:setup-step', SetupStep.Owner)
+                                }
+                            })
+                            break
+                        }
+                        case 500: {
+                            // Internal Server Error
+                            uiState.error.response.serverInternalError = true
+                            uiState.isLoading = false
+                            break
+                        }
                     }
                 }
             })
@@ -136,26 +149,35 @@ const configOwner = (secret: string) => {
 
 <template>
 
-    <v-snackbar v-model="uiState.exceptionForbidden"
+    <v-snackbar v-model="uiState.error.request.connection"
                 color="error-container">
 
         <span class="text-error">
-            {{ t('setup.config-owner.exception.forbidden') }}
+            {{ t('setup.config-owner.error.request.connection') }}
         </span>
 
     </v-snackbar>
 
-    <v-snackbar v-model="uiState.exceptionServerInternalError"
+    <v-snackbar v-model="uiState.error.response.forbidden"
                 color="error-container">
 
         <span class="text-error">
-            {{ t('setup.config-owner.exception.internal-server-error.message') }}
+            {{ t('setup.config-owner.error.response.forbidden') }}
+        </span>
+
+    </v-snackbar>
+
+    <v-snackbar v-model="uiState.error.response.serverInternalError"
+                color="error-container">
+
+        <span class="text-error">
+            {{ t('setup.config-owner.error.response.internal-server-error.message') }}
         </span>
 
         <template v-slot:actions>
 
             <v-btn @click="configOwner(secret)" color="on-error-container">
-                {{ t('setup.config-owner.exception.internal-server-error.retry') }}
+                {{ t('setup.config-owner.error.response.internal-server-error.retry') }}
             </v-btn>
 
         </template>
@@ -281,8 +303,14 @@ const configOwner = (secret: string) => {
 
                 </v-btn>
 
-                <v-btn v-if="!!avatar.image" icon size="small" variant="flat">
+                <v-btn v-if="!!avatar.image"
+                       @click="avatar.image = null"
+                       icon
+                       size="small"
+                       variant="flat">
+
                     <span class="material-symbols-rounded">delete</span>
+
                 </v-btn>
 
             </v-card-actions>

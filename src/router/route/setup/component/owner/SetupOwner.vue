@@ -5,7 +5,7 @@ import {useI18n} from 'vue-i18n'
 import axios from 'axios'
 import AxiosAuthorization from '@/axios/axios-authorization'
 import SetupOwnerResponse from './setup-owner-response'
-import UserCredential from '@/storage/user-credential'
+import AccountCredential from '@/storage/account-credential'
 
 const {t} = useI18n()
 
@@ -36,7 +36,7 @@ const startLogin = () => {
             .then((jwt) => {
                 AxiosAuthorization.setToken(jwt)
                 // Save to local storage
-                UserCredential.write(jwt, username, password)
+                AccountCredential.write(jwt, username, password)
                 // TODO: To be implemented
             })
             .catch(() => {

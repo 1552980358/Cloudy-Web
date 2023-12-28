@@ -56,6 +56,56 @@
         }
     },
     "index": {
-        "welcome-back": "WELCOME BACK"
+        "skeleton": {
+            "title": {
+                "retrieve-metadata": "Retrieving Metadata...",
+                "welcome-back": "Welcome Back"
+            }
+        },
+        "login": {
+            "username": {
+                "title": "Login",
+                "text": "Let me know who you are.",
+                "label": "Enter your username",
+                "button": {
+                    "next": "Next"
+                },
+                "error": {
+                    "request": {
+                        "connection": "Connection error occurred."
+                    },
+                    "response": {
+                        "not-found": "Account not found (404)",
+                        "internal-server-error": "Server Internal Error (500)"
+                    }
+                }
+            },
+            "password": {
+                "title": "Verify",
+                "text": "To continue, first verify it's you.",
+                "label": "Enter your password",
+                "one-time": {
+                    "label": "One-time login",
+                    "tooltip": "If enabled, no account credential metadata stored in this device."
+                },
+                "duration": {
+                    "title": "Valid for",
+                    "unit": "{number} Day | {number} Days"
+                },
+                "button": {
+                    "back": "Back",
+                    "login": "Login"
+                },
+                "error": {
+                    "request": {
+                        "connection": "Connection error occurred."
+                    },
+                    "response": {
+                        "unauthorized": "Invalid password (401)",
+                        "internal-server-error": "Server Internal Error (500)"
+                    }
+                }
+            }
+        }
     }
 }

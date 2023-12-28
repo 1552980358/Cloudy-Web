@@ -5,13 +5,13 @@ export default abstract class LocalStorage<T> {
      * @protected
      * @return key
      */
-    protected abstract getKey(): string
+    protected abstract get key(): string
 
     /**
      * Read string from [LocalStorage]
      **/
-    public read(): string | null {
-        return localStorage.getItem(this.getKey())
+    protected read(): string | null {
+        return localStorage.getItem(this.key)
     }
 
     /**
@@ -21,6 +21,7 @@ export default abstract class LocalStorage<T> {
     public readObject(): T | null {
         return this.readObjectImpl(this.read())
     }
+
     /**
      * Implementation of [readObject] that convert string to [T]
      * @param storageData
@@ -32,8 +33,8 @@ export default abstract class LocalStorage<T> {
      * Write string to [LocalStorage]
      * @param value
      */
-    public write(value: string) {
-        localStorage.setItem(this.getKey(), value)
+    protected write(value: string) {
+        localStorage.setItem(this.key, value)
     }
 
     /**
@@ -47,7 +48,7 @@ export default abstract class LocalStorage<T> {
      * Remove item from [LocalStorage]
      */
     public clear() {
-        localStorage.removeItem(this.getKey())
+        localStorage.removeItem(this.key)
     }
 
 }

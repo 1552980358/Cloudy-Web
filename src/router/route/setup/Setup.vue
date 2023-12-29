@@ -48,9 +48,9 @@ const secret = ref()
 
         <v-btn @click="triggerTheme"
                icon>
-                <span class="material-symbols-rounded">
-                    {{ theme.global.current.value.dark ? 'light_mode' : 'dark_mode' }}
-                </span>
+            <span class="material-symbols-rounded">
+                {{ theme.global.current.value.dark ? 'light_mode' : 'dark_mode' }}
+            </span>
         </v-btn>
 
     </v-app-bar>

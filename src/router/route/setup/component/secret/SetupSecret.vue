@@ -1,10 +1,9 @@
 <script setup lang="ts">
 
 import {computed, ref} from 'vue'
-import axios, {AxiosResponse} from 'axios'
 import {useI18n} from 'vue-i18n'
-import SetupSecretResponse from '@/router/route/setup/component/secret/setup-secret-response'
 import SetupStep from '@/router/route/setup/setup-step'
+import AxiosRequest from '@/axios/axios-request'
 
 const {t} = useI18n()
 
@@ -24,8 +23,7 @@ const isLoading = ref(false)
 const startVerifySecret = (secret: string) => {
     if (!!secret && !isLoading.value) {
         isLoading.value = true
-        axios.get(`setup?secret=${secret}`)
-            .then((axiosResponse: AxiosResponse) => axiosResponse.data as SetupSecretResponse)
+        AxiosRequest.setup.get(secret)
             .then((setupSecretResponse) => {
                 emits(
                     'update:setup-step',

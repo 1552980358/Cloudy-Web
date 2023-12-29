@@ -3,83 +3,33 @@
 import {inject, reactive, watch} from 'vue'
 import {IndexUiState} from '../../index-key'
 import axios from 'axios'
-import {Authorization} from '@/util/global-state'
-import IndexAccountResponse from '../../index-account-response'
+import {Account, Authorization} from '@/util/global-state'
+
+const authorizationState = inject(Authorization)
+const accountState = inject(Account)
 
 const indexUiState = inject(IndexUiState)
 
-const uiState = reactive({
-    defaultAvatar: false,
-})
-const account = reactive({
-    nickname: null,
-    username: null,
-    id: null,
-})
+const uiState = reactive({ defaultAvatar: false })
 
-const checkAuthState = () => {
+const onAuthorizationCompleted = () => {
     if (authorizationState.isAuthorized) {
-        requestAccountMetadata(true)
+        // TODO: Route to home
     } else {
-        moveToLogin()
+        indexUiState.panel = 1
     }
-}
-
-const retryOrMoveToLogin = (allowRetry: boolean) => {
-    if (allowRetry) {
-        requestAccountMetadata()
-    } else {
-        moveToLogin()
-    }
-}
-
-const requestAccountMetadata = (allowRetry = false) => {
-    axios.get('account')
-        .then((response) => response.data as IndexAccountResponse)
-        .then((indexAccountResponse) => {
-            account.nickname = indexAccountResponse.nickname
-            account.username = indexAccountResponse.username
-            account.id = indexAccountResponse.id
-            indexUiState.isLoading = false
-            // TODO: To be implemented
-        })
-        .catch((error) => {
-            if (!error.response) {
-                retryOrMoveToLogin(allowRetry)
-            } else {
-                switch (error.response.status) {
-                    case 401: {
-                        // Authorization should be handled by `App.vue`
-                        // So, handling re-login is not required here
-                        // Just move to login page for human handling
-                        moveToLogin()
-                        break
-                    }
-                    case 500: {
-                        retryOrMoveToLogin(allowRetry)
-                        break
-                    }
-                }
-            }
-        })
-}
-
-const moveToLogin = () => {
     indexUiState.isLoading = false
-    indexUiState.panel = 1
 }
 
-const authorizationState = inject(Authorization)
-if (authorizationState.isCompleted) {
-    checkAuthState()
-} else {
-    // Let's watch until `App.vue`'s auth checking is done
+if (!authorizationState.isCompleted) {
     const unwatch = watch(() => authorizationState.isCompleted, (isCompleted) => {
         if (isCompleted) {
-            checkAuthState()
             unwatch()
+            onAuthorizationCompleted()
         }
     })
+} else {
+    onAuthorizationCompleted()
 }
 
 </script>
@@ -95,8 +45,8 @@ if (authorizationState.isCompleted) {
                        type="list-item-avatar-two-line">
     </v-skeleton-loader>
     <v-list-item v-else
-                 :title="account.nickname"
-                 :subtitle="`@${account.username}`"
+                 :title="accountState.nickname"
+                 :subtitle="`@${accountState.username}`"
                  class="unselectable"
                  lines="two">
 
@@ -106,7 +56,7 @@ if (authorizationState.isCompleted) {
 
                 <v-img v-if="!uiState.defaultAvatar"
                        @error="uiState.defaultAvatar = true"
-                       :src="`${axios.defaults.baseURL}account/${account.id}/avatar`"
+                       :src="`${axios.defaults.baseURL}account/${accountState.id}/avatar`"
                        class="w-100 h-100 unselectable"
                        draggable="false">
                 </v-img>

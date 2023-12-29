@@ -249,6 +249,7 @@ const accountLogin = () => {
                     <template v-slot:append-inner>
                         <v-btn v-show="!!account.password"
                                @click="uiState.password.visibility = !uiState.password.visibility"
+                               color="onSurface"
                                icon
                                variant="text">
                             <span class="material-symbols-rounded">
@@ -309,10 +310,10 @@ const accountLogin = () => {
 
                                             <template v-slot:prepend>
                                                 <v-expand-x-transition>
-                                            <span v-if="account.duration == index"
-                                                  class="material-symbols-rounded">
-                                                check
-                                            </span>
+                                                    <span v-if="account.duration == index"
+                                                          class="material-symbols-rounded">
+                                                        check
+                                                    </span>
                                                 </v-expand-x-transition>
                                             </template>
 

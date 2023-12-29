@@ -49,8 +49,10 @@ export default class AccountCredential {
     ) {}
 
     public set token(token: string | null) {
-        this._token = token
-        accountCredentialStorage.writeObject(this)
+        if (this._token != token) {
+            this._token = token
+            accountCredentialStorage.writeObject(this)
+        }
     }
 
     public get token(): string | null {
@@ -69,10 +71,6 @@ export default class AccountCredential {
         this._username = username
         this._password = password
         this.token = token
-    }
-
-    public get headerOption() : { headers: { Authorization: string } } {
-        return { headers: { Authorization: `JWT ${this.token}` } }
     }
 
 }

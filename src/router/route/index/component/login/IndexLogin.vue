@@ -5,14 +5,17 @@ import {useI18n} from 'vue-i18n'
 import AccountCredential from '@/storage/account-credential'
 import {IndexUiState} from '../../index-key'
 import axios from 'axios'
-import IndexAccountResponse from '@/router/route/index/index-account-response'
 import AxiosAuthorization from '@/axios/axios-authorization'
-import {Authorization} from '@/util/global-state'
+import {Account, Authorization} from '@/util/global-state'
+import AxiosRequest from '@/axios/axios-request'
 
 const  {t} = useI18n()
 
 const authorizationState = inject(Authorization)
+const accountState = inject(Account)
+
 const indexUiState = inject(IndexUiState)
+
 const uiState = reactive({
     window: 0,
     password:{
@@ -41,11 +44,10 @@ const accountMetadata = () => {
     if (!indexUiState.isLoading && !!account.username) {
         indexUiState.isLoading = true
 
-        axios.get(`account/username/${account.username}`)
-            .then((response) => response.data as IndexAccountResponse)
-            .then((indexAccountResponse) => {
-                account.id = indexAccountResponse.id
-                account.nickname = indexAccountResponse.nickname
+        AxiosRequest.account.username.get(account.username)
+            .then((responseBody) => {
+                account.id = responseBody.id
+                account.nickname = responseBody.nickname
                 uiState.error.username = null
                 indexUiState.isLoading = false
                 uiState.window = 1
@@ -78,23 +80,21 @@ const accountLogin = () => {
     if (!indexUiState.isLoading && !!account.password) {
         indexUiState.isLoading = true
 
-        const urlSuffix = account.oneTimeLogin ? `?duration=${durationList[account.duration] * 24 * 60 * 60}` : ''
-        const postBody = {
-            username: account.username,
-            password: account.password,
-        }
-        axios.post(`auth${urlSuffix}`, postBody)
-            .then((response) => response.data as string)
+        const duration = account.oneTimeLogin ? durationList[account.duration] * 24 * 60 * 60 : null
+        AxiosRequest.auth.post(account.username, account.password, duration)
             .then((token) => {
                 AxiosAuthorization.setToken(token)
-                authorizationState.isAuthorized = true
+                accountState.id = account.id
+                accountState.username = account.username
+                accountState.nickname = account.nickname
                 if (account.oneTimeLogin) {
                     accountCredential.token = token
                 } else {
                     accountCredential.setCredential(token, account.username, account.password)
                 }
+                authorizationState.isAuthorized = true
                 indexUiState.isLoading = false
-                // TODO: To be implemented
+                // TODO: Route to home
             })
             .catch((error) => {
                 let errorKeyPath = null as string | null

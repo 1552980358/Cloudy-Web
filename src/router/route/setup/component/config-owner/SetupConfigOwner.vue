@@ -3,9 +3,9 @@
 import {computed, reactive, ref, watchEffect} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {text} from 'stream/consumers'
-import axios from 'axios'
 import {Cropper, CircleStencil, Preview} from 'vue-advanced-cropper'
 import SetupStep from '@/router/route/setup/setup-step'
+import AxiosRequest from '@/axios/axios-request'
 
 const {t} = useI18n()
 
@@ -100,17 +100,10 @@ const validFields = computed(() => {
 const configOwner = (secret: string) => {
     if (validFields.value && !uiState.isLoading) {
         uiState.isLoading = true
-        let post_body = {
-            username: fields.username,
-            password: fields.password,
-            nickname: fields.nickname,
-            avatar: avatar.image,
-            role: 'owner'
-        }
-        axios.post(`setup/owner?secret=${secret}`, post_body)
-            .then(() => {
-                emits('update:setup-step', SetupStep.Owner)
-            })
+
+        AxiosRequest.setup.owner
+            .post(secret, fields.username, fields.password, fields.nickname, avatar.image)
+            .then(() => { emits('update:setup-step', SetupStep.Owner)})
             .catch((error) => {
                 if (!error.response) {
                     uiState.error.request.connection = true

@@ -4,8 +4,8 @@ import {reactive} from 'vue'
 import {useI18n} from 'vue-i18n'
 import axios from 'axios'
 import AxiosAuthorization from '@/axios/axios-authorization'
-import SetupOwnerResponse from './setup-owner-response'
 import AccountCredential from '@/storage/account-credential'
+import AxiosRequest from '@/axios/axios-request'
 
 const {t} = useI18n()
 
@@ -18,7 +18,11 @@ const uiState = reactive({
 })
 
 const ownerCredential = reactive({
-    metadata: null as SetupOwnerResponse,
+    metadata: {
+        id: null,
+        username: null,
+        nickname: null,
+    },
     password: null,
 })
 
@@ -27,12 +31,7 @@ const startLogin = () => {
     if (!!password && !uiState.isLoading) {
         uiState.isLoading = true
         const username = ownerCredential.metadata.username
-        const postBody = {
-            username: username,
-            password: password
-        }
-        axios.post('auth', postBody)
-            .then((response) => response.data)
+        AxiosRequest.auth.post(username, password)
             .then((jwt) => {
                 AxiosAuthorization.setToken(jwt)
                 // Save to local storage
@@ -46,10 +45,9 @@ const startLogin = () => {
     }
 }
 
-axios.get('setup/owner')
-    .then((response) => response.data as SetupOwnerResponse)
-    .then((setupOwnerResponse) => {
-        ownerCredential.metadata = setupOwnerResponse
+AxiosRequest.setup.owner.get()
+    .then((responseBody) => {
+        ownerCredential.metadata = responseBody
     })
 
 </script>
@@ -67,7 +65,7 @@ axios.get('setup/owner')
 
         <v-avatar class="setup-owner-avatar" size="84">
 
-            <img v-if="!!ownerCredential.metadata && !uiState.defaultAvatar"
+            <img v-if="!!ownerCredential.metadata.id && !uiState.defaultAvatar"
                  :src="`${axios.defaults.baseURL}account/${ownerCredential.metadata.id}/avatar`"
                  @error="uiState.defaultAvatar = true"
                  alt=""
@@ -81,7 +79,7 @@ axios.get('setup/owner')
 
     </div>
 
-    <v-card-title v-if="!!ownerCredential.metadata" class="text-center">
+    <v-card-title v-if="!!ownerCredential.metadata.id" class="text-center">
 
         {{ ownerCredential.metadata.nickname }}
 

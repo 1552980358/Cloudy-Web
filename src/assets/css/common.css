@@ -7,7 +7,7 @@
     user-select: none;
 }
 
-.no-uppercase {
+.text-transform-none {
     text-transform: none !important;
 }
 

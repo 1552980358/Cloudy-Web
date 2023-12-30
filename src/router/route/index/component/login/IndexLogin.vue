@@ -167,7 +167,7 @@ const accountLogin = () => {
 
                 <v-btn @click="requestAccountMetadata"
                        :disabled="!fields.username || indexUiState.isLoading"
-                       class="no-uppercase"
+                       class="text-transform-none"
                        color="primary"
                        variant="flat">
                     <i18n-t keypath="index.login.username.button.next"></i18n-t>
@@ -350,7 +350,7 @@ const accountLogin = () => {
 
                 <v-btn @click="accountLogin"
                        :disabled="!fields.password || indexUiState.isLoading"
-                       class="no-uppercase"
+                       class="text-transform-none"
                        color="primary"
                        variant="flat">
                     <i18n-t keypath="index.login.password.button.login"></i18n-t>

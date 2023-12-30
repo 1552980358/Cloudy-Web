@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
 import {inject, reactive, watch} from 'vue'
-import {IndexUiState} from '../../index-key'
+import {IndexUiState} from '../../index-state'
 import axios from 'axios'
 import {Account, Authorization} from '@/util/global-state'
+import IndexPanel from '@/router/route/index/index-panel'
 
 const authorizationState = inject(Authorization)
 const accountState = inject(Account)
@@ -16,7 +17,7 @@ const onAuthorizationCompleted = () => {
     if (authorizationState.isAuthorized) {
         // TODO: Route to home
     } else {
-        indexUiState.panel = 1
+        indexUiState.panel = IndexPanel.Login
     }
     indexUiState.isLoading = false
 }

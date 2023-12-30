@@ -3,11 +3,12 @@
 import {inject, reactive} from 'vue'
 import {useI18n} from 'vue-i18n'
 import AccountCredential from '@/storage/account-credential'
-import {IndexUiState} from '../../index-key'
+import {IndexUiState} from '../../index-state'
 import axios from 'axios'
 import AxiosAuthorization from '@/axios/axios-authorization'
 import {Account, Authorization} from '@/util/global-state'
 import AxiosRequest from '@/axios/axios-request'
+import IndexLoginPanel from './index-login-panel'
 
 const  {t} = useI18n()
 
@@ -17,7 +18,7 @@ const accountState = inject(Account)
 const indexUiState = inject(IndexUiState)
 
 const uiState = reactive({
-    window: 0,
+    panel: IndexLoginPanel.Username,
     password:{
         defaultAvatar: false,
         visibility: false,
@@ -29,31 +30,35 @@ const uiState = reactive({
 })
 
 const accountCredential = AccountCredential.read()
-const account = reactive({
+const fields = reactive({
     username: accountCredential.username,
-    id: null,
-    nickname: null,
     password: accountCredential.password,
-    duration: 0,
-    oneTimeLogin: false,
+    duration: {
+        onetime: false,
+        selection: 0,
+    }
 })
 
 const durationList = [1, 3, 7, 15, 30, 180, 365]
 
-const accountMetadata = () => {
-    if (!indexUiState.isLoading && !!account.username) {
+const accountMetadata = reactive({
+    id: null, nickname: null,
+})
+
+const requestAccountMetadata = () => {
+    if (!indexUiState.isLoading && !!fields.username) {
         indexUiState.isLoading = true
 
-        AxiosRequest.account.username.get(account.username)
+        AxiosRequest.account.username.get(fields.username)
             .then((responseBody) => {
-                account.id = responseBody.id
-                account.nickname = responseBody.nickname
+                accountMetadata.id = responseBody.id
+                accountMetadata.nickname = responseBody.nickname
                 uiState.error.username = null
                 indexUiState.isLoading = false
-                uiState.window = 1
+                uiState.panel = IndexLoginPanel.Password
             })
             .catch((error) => {
-                let errorKeyPath = null as string | null
+                let errorKeyPath: string | null = null
                 if (!error.response) {
                     errorKeyPath = 'index.login.username.error.request.connection'
                 } else {
@@ -77,27 +82,27 @@ const accountMetadata = () => {
 }
 
 const accountLogin = () => {
-    if (!indexUiState.isLoading && !!account.password) {
+    if (!indexUiState.isLoading && !!fields.password) {
         indexUiState.isLoading = true
 
-        const duration = account.oneTimeLogin ? durationList[account.duration] * 24 * 60 * 60 : null
-        AxiosRequest.auth.post(account.username, account.password, duration)
+        const duration = fields.duration.onetime ? durationList[fields.duration.selection] * 24 * 60 * 60 : null
+        AxiosRequest.auth.post(fields.username, fields.password, duration)
             .then((token) => {
                 AxiosAuthorization.setToken(token)
-                accountState.id = account.id
-                accountState.username = account.username
-                accountState.nickname = account.nickname
-                if (account.oneTimeLogin) {
+                accountState.id = accountMetadata.id
+                accountState.username = fields.username
+                accountState.nickname = accountMetadata.nickname
+                if (fields.duration.onetime) {
                     accountCredential.token = token
                 } else {
-                    accountCredential.setCredential(token, account.username, account.password)
+                    accountCredential.setCredential(token, fields.username, fields.password)
                 }
                 authorizationState.isAuthorized = true
                 indexUiState.isLoading = false
                 // TODO: Route to home
             })
             .catch((error) => {
-                let errorKeyPath = null as string | null
+                let errorKeyPath: string | null = null
                 if (!error.response) {
                     errorKeyPath = 'index.login.password.error.request.connection'
                 } else {
@@ -124,7 +129,7 @@ const accountLogin = () => {
 
 <template>
 
-    <v-window v-model="uiState.window">
+    <v-window v-model="uiState.panel">
 
         <!-- Username -->
         <v-window-item :key="0">
@@ -139,8 +144,8 @@ const accountLogin = () => {
                     <i18n-t keypath="index.login.username.text"></i18n-t>
                 </div>
 
-                <v-text-field v-model="account.username"
-                              @keyup.enter="accountMetadata"
+                <v-text-field v-model="fields.username"
+                              @keyup.enter="requestAccountMetadata"
                               :disabled="indexUiState.isLoading"
                               :error="!!uiState.error.username"
                               :error-messages="uiState.error.username"
@@ -160,8 +165,8 @@ const accountLogin = () => {
 
                 <v-spacer></v-spacer>
 
-                <v-btn @click="accountMetadata"
-                       :disabled="!account.username || indexUiState.isLoading"
+                <v-btn @click="requestAccountMetadata"
+                       :disabled="!fields.username || indexUiState.isLoading"
                        class="no-uppercase"
                        color="primary"
                        variant="flat">
@@ -178,7 +183,7 @@ const accountLogin = () => {
             <v-toolbar color="surface" density="comfortable">
 
                 <template v-slot:prepend>
-                    <v-btn @click="uiState.window = 0"
+                    <v-btn @click="uiState.panel = 0"
                            icon
                            variant="text">
                         <span class="material-symbols-rounded">arrow_back</span>
@@ -200,11 +205,11 @@ const accountLogin = () => {
                     <v-list-item class="unselectable">
 
                         <template v-slot:title>
-                            {{ account.nickname }}
+                            {{ accountMetadata.nickname }}
                         </template>
 
                         <template v-slot:subtitle>
-                            @{{ account.username }}
+                            @{{ fields.username }}
                         </template>
 
                         <template v-slot:prepend>
@@ -214,7 +219,7 @@ const accountLogin = () => {
 
                                 <v-img v-if="!uiState.password.defaultAvatar"
                                        @error="uiState.password.defaultAvatar = true"
-                                       :src="`${axios.defaults.baseURL}account/${account.id}/avatar`"
+                                       :src="`${axios.defaults.baseURL}account/${accountMetadata.id}/avatar`"
                                        draggable="false">
                                 </v-img>
                                 <span v-else
@@ -234,7 +239,7 @@ const accountLogin = () => {
                     <i18n-t keypath="index.login.password.text"></i18n-t>
                 </div>
 
-                <v-text-field v-model="account.password"
+                <v-text-field v-model="fields.password"
                               @keyup.enter="accountLogin"
                               :error="!!uiState.error.password"
                               :error-messages="uiState.error.password"
@@ -247,7 +252,7 @@ const accountLogin = () => {
                     </template>
 
                     <template v-slot:append-inner>
-                        <v-btn v-show="!!account.password"
+                        <v-btn v-show="!!fields.password"
                                @click="uiState.password.visibility = !uiState.password.visibility"
                                color="onSurface"
                                icon
@@ -260,7 +265,7 @@ const accountLogin = () => {
 
                 </v-text-field>
 
-                <v-checkbox-btn v-model="account.oneTimeLogin">
+                <v-checkbox-btn v-model="fields.duration.onetime">
                     <template v-slot:label>
 
                         <i18n-t keypath="index.login.password.one-time.label"></i18n-t>
@@ -282,7 +287,7 @@ const accountLogin = () => {
 
                 <v-expand-transition>
 
-                    <div v-show="account.oneTimeLogin"
+                    <div v-show="fields.duration.onetime"
                          class="mt-2 unselectable">
 
                         <i18n-t keypath="index.login.password.duration.title"></i18n-t>
@@ -293,15 +298,15 @@ const accountLogin = () => {
 
                                 <template v-slot:title>
                                     <i18n-t keypath="index.login.password.duration.unit"
-                                            :plural="durationList[account.duration]">
+                                            :plural="durationList[fields.duration]">
                                         <!--suppress VueUnrecognizedSlot -->
-                                        <template v-slot:number>{{ durationList[account.duration] }}</template>
+                                        <template v-slot:number>{{ durationList[fields.duration] }}</template>
                                     </i18n-t>
                                 </template>
 
                                 <v-expansion-panel-text>
 
-                                    <v-chip-group v-model="account.duration"
+                                    <v-chip-group v-model="fields.duration"
                                                   mandatory>
 
                                         <v-chip v-for="(duration, index) in durationList"
@@ -310,7 +315,7 @@ const accountLogin = () => {
 
                                             <template v-slot:prepend>
                                                 <v-expand-x-transition>
-                                                    <span v-if="account.duration == index"
+                                                    <span v-if="fields.duration.selection == index"
                                                           class="material-symbols-rounded">
                                                         check
                                                     </span>
@@ -344,7 +349,7 @@ const accountLogin = () => {
                 <v-spacer></v-spacer>
 
                 <v-btn @click="accountLogin"
-                       :disabled="!account.password || indexUiState.isLoading"
+                       :disabled="!fields.password || indexUiState.isLoading"
                        class="no-uppercase"
                        color="primary"
                        variant="flat">

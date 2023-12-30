@@ -3,7 +3,8 @@
 import {provide, reactive} from 'vue'
 import IndexLogin from './component/login/IndexLogin.vue'
 import IndexSkeleton from './component/skeleten/IndexSkeleton.vue'
-import {IndexUiState} from './index-key'
+import {IndexUiState} from './index-state'
+import IndexPanel from './index-panel'
 
 const uiState = reactive({
     isLoading: true,
@@ -23,9 +24,9 @@ provide(IndexUiState, uiState)
                     class="w-50"
                     max-width="480">
 
-                <index-skeleton v-if="uiState.panel == 0">
+                <index-skeleton v-if="uiState.panel == IndexPanel.Skeleton">
                 </index-skeleton>
-                <index-login v-else-if="uiState.panel == 1">
+                <index-login v-else-if="uiState.panel == IndexPanel.Login">
                 </index-login>
 
             </v-card>

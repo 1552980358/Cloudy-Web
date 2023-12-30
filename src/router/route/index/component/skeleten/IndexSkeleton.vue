@@ -3,11 +3,11 @@
 import {inject, reactive, watch} from 'vue'
 import {IndexUiState} from '../../index-state'
 import axios from 'axios'
-import {Account, Authorization} from '@/util/global-state'
+import {Account, AuthorizationState} from '@/util/global-state'
 import IndexPanel from '@/router/route/index/index-panel'
 
-const authorizationState = inject(Authorization)
-const accountState = inject(Account)
+const authorizationState = inject(AuthorizationState)
+const account = inject(Account)
 
 const indexUiState = inject(IndexUiState)
 
@@ -46,8 +46,8 @@ if (!authorizationState.isCompleted) {
                        type="list-item-avatar-two-line">
     </v-skeleton-loader>
     <v-list-item v-else
-                 :title="accountState.nickname"
-                 :subtitle="`@${accountState.username}`"
+                 :title="account.nickname"
+                 :subtitle="`@${account.username}`"
                  class="unselectable"
                  lines="two">
 
@@ -57,7 +57,7 @@ if (!authorizationState.isCompleted) {
 
                 <v-img v-if="!uiState.defaultAvatar"
                        @error="uiState.defaultAvatar = true"
-                       :src="`${axios.defaults.baseURL}account/${accountState.id}/avatar`"
+                       :src="`${axios.defaults.baseURL}account/${account.id}/avatar`"
                        class="w-100 h-100 unselectable"
                        draggable="false">
                 </v-img>

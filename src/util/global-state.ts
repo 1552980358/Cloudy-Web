@@ -1,6 +1,6 @@
 import {InjectionKey} from 'vue'
 
-export const Authorization: InjectionKey<{
+export const AuthorizationState: InjectionKey<{
     isCompleted: boolean, isAuthorized: boolean
 }> = Symbol()
 

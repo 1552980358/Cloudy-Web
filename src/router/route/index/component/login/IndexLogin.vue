@@ -6,14 +6,14 @@ import AccountCredential from '@/storage/account-credential'
 import {IndexUiState} from '../../index-state'
 import axios from 'axios'
 import AxiosAuthorization from '@/axios/axios-authorization'
-import {Account, Authorization} from '@/util/global-state'
+import {Account, AuthorizationState} from '@/util/global-state'
 import AxiosRequest from '@/axios/axios-request'
 import IndexLoginPanel from './index-login-panel'
 
 const  {t} = useI18n()
 
-const authorizationState = inject(Authorization)
-const accountState = inject(Account)
+const authorizationState = inject(AuthorizationState)
+const account = inject(Account)
 
 const indexUiState = inject(IndexUiState)
 
@@ -89,9 +89,9 @@ const accountLogin = () => {
         AxiosRequest.auth.post(fields.username, fields.password, duration)
             .then((token) => {
                 AxiosAuthorization.setToken(token)
-                accountState.id = accountMetadata.id
-                accountState.username = fields.username
-                accountState.nickname = accountMetadata.nickname
+                account.id = accountMetadata.id
+                account.username = fields.username
+                account.nickname = accountMetadata.nickname
                 if (fields.duration.onetime) {
                     accountCredential.token = token
                 } else {

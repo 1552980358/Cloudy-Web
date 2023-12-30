@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {provide, reactive} from 'vue'
-import {Account, Authorization} from '@/util/global-state'
+import {Account, AuthorizationState} from '@/util/global-state'
 import AccountCredential from '@/storage/account-credential'
 import AxiosRequest from '@/axios/axios-request'
 import AxiosAuthorization from '@/axios/axios-authorization'
@@ -10,13 +10,13 @@ const authorizationState = reactive({
     isCompleted: false,
     isAuthorized: false
 })
-provide(Authorization, authorizationState)
-const accountState = reactive({
+provide(AuthorizationState, authorizationState)
+const account = reactive({
     id: null as string | null,
     username: null as string | null,
     nickname: null as string | null,
 })
-provide(Account, accountState)
+provide(Account, account)
 
 const clearToken = () => {
     if (!!accountCredential.token) {
@@ -69,9 +69,9 @@ const requestAccountMetadata = (token: string, allowRequest = false, allowLogin 
     AxiosRequest.account.get(token)
         .then((accountResponse) => {
             AxiosAuthorization.setToken(token)
-            accountState.id = accountResponse.id
-            accountState.nickname = accountResponse.nickname
-            accountState.username = accountResponse.username
+            account.id = accountResponse.id
+            account.nickname = accountResponse.nickname
+            account.username = accountResponse.username
             authorizationState.isAuthorized = true
             authorizationState.isCompleted = true
         })

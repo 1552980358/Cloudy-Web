@@ -7,17 +7,15 @@
             }
         },
         "login": {
-            "username": {
+            "identity": {
                 "title": "Login",
                 "text": "Let me know who you are.",
-                "label": "Enter your username",
+                "label": "Username or Email",
                 "button": {
                     "next": "Next"
                 },
                 "error": {
-                    "request": {
-                        "connection": "Connection error occurred."
-                    },
+                    "connection": "Connection error occurred.",
                     "response": {
                         "not-found": "Account not found (404)",
                         "internal-server-error": "Server Internal Error (500)"
@@ -41,9 +39,7 @@
                     "login": "Login"
                 },
                 "error": {
-                    "request": {
-                        "connection": "Connection error occurred."
-                    },
+                    "connection": "Connection error occurred.",
                     "response": {
                         "unauthorized": "Invalid password (401)",
                         "internal-server-error": "Server Internal Error (500)"

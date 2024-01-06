@@ -18,20 +18,19 @@ const account = inject(Account)
 const indexUiState = inject(IndexUiState)
 
 const uiState = reactive({
-    panel: IndexLoginPanel.Username,
+    panel: IndexLoginPanel.Identity,
     password:{
-        defaultAvatar: false,
         visibility: false,
     },
     error: {
-        username: null,
+        identity: null,
         password: null,
     }
 })
 
 const accountCredential = AccountCredential.read()
 const fields = reactive({
-    username: accountCredential.username,
+    identity: accountCredential.username,
     password: accountCredential.password,
     duration: {
         onetime: false,
@@ -46,35 +45,31 @@ const accountMetadata = reactive({
 })
 
 const requestAccountMetadata = () => {
-    if (!indexUiState.isLoading && !!fields.username) {
+    if (!indexUiState.isLoading && !!fields.identity) {
         indexUiState.isLoading = true
 
-        AxiosRequest.account.username.get(fields.username)
+        AxiosRequest.account.find.get(fields.identity)
             .then((responseBody) => {
                 accountMetadata.id = responseBody.id
                 accountMetadata.nickname = responseBody.nickname
-                uiState.error.username = null
+                uiState.error.identity = null
                 indexUiState.isLoading = false
                 uiState.panel = IndexLoginPanel.Password
             })
             .catch((error) => {
-                let errorKeyPath: string | null = null
                 if (!error.response) {
-                    errorKeyPath = 'index.login.username.error.request.connection'
+                    uiState.error.identity = 'connection'
                 } else {
                     switch (error.response.status) {
                         case 404: {
-                            errorKeyPath = 'index.login.username.error.response.not-found'
+                            uiState.error.identity = 'response.not-found'
                             break
                         }
                         case 500: {
-                            errorKeyPath = 'index.login.username.error.response.internal-server-error'
+                            uiState.error.identity = 'response.internal-server-error'
                             break
                         }
                     }
-                }
-                if (!!errorKeyPath) {
-                    uiState.error.username = t(errorKeyPath)
                 }
                 indexUiState.isLoading = false
             })
@@ -86,39 +81,35 @@ const accountLogin = () => {
         indexUiState.isLoading = true
 
         const duration = fields.duration.onetime ? durationList[fields.duration.selection] * 24 * 60 * 60 : null
-        AxiosRequest.auth.post(fields.username, fields.password, duration)
+        AxiosRequest.auth.post(fields.identity, fields.password, duration)
             .then((token) => {
                 AxiosAuthorization.setToken(token)
                 account.id = accountMetadata.id
-                account.username = fields.username
+                account.username = fields.identity
                 account.nickname = accountMetadata.nickname
                 if (fields.duration.onetime) {
                     accountCredential.token = token
                 } else {
-                    accountCredential.setCredential(token, fields.username, fields.password)
+                    accountCredential.setCredential(token, fields.identity, fields.password)
                 }
                 authorizationState.isAuthorized = true
                 indexUiState.isLoading = false
                 // TODO: Route to home
             })
             .catch((error) => {
-                let errorKeyPath: string | null = null
                 if (!error.response) {
-                    errorKeyPath = 'index.login.password.error.request.connection'
+                    uiState.error.password = 'connection'
                 } else {
                     switch (error.response.status) {
                         case 401: {
-                            errorKeyPath = 'index.login.password.error.response.unauthorized'
+                            uiState.error.password = 'response.unauthorized'
                             break
                         }
                         case 500: {
-                            errorKeyPath = 'index.login.password.error.response.internal-server-error'
+                            uiState.error.password = 'response.internal-server-error'
                             break
                         }
                     }
-                }
-                if (!!errorKeyPath) {
-                    uiState.error.password = t(errorKeyPath)
                 }
                 indexUiState.isLoading = false
             })
@@ -135,26 +126,31 @@ const accountLogin = () => {
         <v-window-item :key="0">
 
             <v-card-title class="text-center unselectable">
-                <i18n-t keypath="index.login.username.title"></i18n-t>
+                <i18n-t keypath="index.login.identity.title"></i18n-t>
             </v-card-title>
 
             <v-card-text>
 
                 <div class="unselectable">
-                    <i18n-t keypath="index.login.username.text"></i18n-t>
+                    <i18n-t keypath="index.login.identity.text"></i18n-t>
                 </div>
 
-                <v-text-field v-model="fields.username"
+                <v-text-field v-model="fields.identity"
                               @keyup.enter="requestAccountMetadata"
                               :disabled="indexUiState.isLoading"
-                              :error="!!uiState.error.username"
-                              :error-messages="uiState.error.username"
+                              :error="!!uiState.error.identity"
+                              :error-messages="uiState.error.identity"
                               class="mt-2"
                               hide-details="auto"
                               variant="outlined">
 
+                    <template v-slot:message="{message}">
+                        <!-- Message is only holding for error -->
+                        <i18n-t :keypath="`index.login.identity.error.${message}`"></i18n-t>
+                    </template>
+
                     <template v-slot:label>
-                        <i18n-t keypath="index.login.username.label"></i18n-t>
+                        <i18n-t keypath="index.login.identity.label"></i18n-t>
                     </template>
 
                 </v-text-field>
@@ -166,11 +162,11 @@ const accountLogin = () => {
                 <v-spacer></v-spacer>
 
                 <v-btn @click="requestAccountMetadata"
-                       :disabled="!fields.username || indexUiState.isLoading"
+                       :disabled="!fields.identity || indexUiState.isLoading"
                        class="text-transform-none"
                        color="primary"
                        variant="flat">
-                    <i18n-t keypath="index.login.username.button.next"></i18n-t>
+                    <i18n-t keypath="index.login.identity.button.next"></i18n-t>
                 </v-btn>
 
             </v-card-actions>
@@ -209,26 +205,21 @@ const accountLogin = () => {
                         </template>
 
                         <template v-slot:subtitle>
-                            @{{ fields.username }}
+                            @{{ fields.identity }}
                         </template>
 
                         <template v-slot:prepend>
-
-                            <v-avatar class="unselectable"
-                                      size="48">
-
-                                <v-img v-if="!uiState.password.defaultAvatar"
-                                       @error="uiState.password.defaultAvatar = true"
-                                       :src="`${axios.defaults.baseURL}account/${accountMetadata.id}/avatar`"
+                            <v-avatar class="material-avatar unselectable">
+                                <v-img :src="`${axios.defaults.baseURL}account/${accountMetadata.id}/avatar`"
+                                       class="w-100 h-100"
                                        draggable="false">
+                                    <template v-slot:placeholder>
+                                        <span class="material-symbols-rounded text-black material-avatar">
+                                            account_circle
+                                        </span>
+                                    </template>
                                 </v-img>
-                                <span v-else
-                                      class="material-symbols-rounded text-black material-avatar">
-                                    account_circle
-                                </span>
-
                             </v-avatar>
-
                         </template>
 
                     </v-list-item>
@@ -246,6 +237,11 @@ const accountLogin = () => {
                               :type="uiState.password.visibility ? 'text' : 'password'"
                               hide-details="auto"
                               variant="outlined">
+
+                    <template v-slot:message="{message}">
+                        <!-- Message is only holding for error -->
+                        <i18n-t :keypath="`index.login.password.error.${message}`"></i18n-t>
+                    </template>
 
                     <template v-slot:label>
                         <i18n-t keypath="index.login.password.label"></i18n-t>

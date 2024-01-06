@@ -2,6 +2,7 @@ import axios from 'axios'
 
 interface ResponseBody {
     id: string,
+    nickname: string,
     username: string,
     email: string,
 }

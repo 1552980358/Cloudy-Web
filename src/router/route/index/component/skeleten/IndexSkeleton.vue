@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {inject, reactive, watch} from 'vue'
+import {inject, watch} from 'vue'
 import {IndexUiState} from '../../index-state'
 import axios from 'axios'
 import {Account, AuthorizationState} from '@/util/global-state'
@@ -10,8 +10,6 @@ const authorizationState = inject(AuthorizationState)
 const account = inject(Account)
 
 const indexUiState = inject(IndexUiState)
-
-const uiState = reactive({ defaultAvatar: false })
 
 const onAuthorizationCompleted = () => {
     if (authorizationState.isAuthorized) {
@@ -52,22 +50,17 @@ if (!authorizationState.isCompleted) {
                  lines="two">
 
         <template v-slot:prepend>
-
-            <v-avatar class="index-skeleton-avatar unselectable" size="48">
-
-                <v-img v-if="!uiState.defaultAvatar"
-                       @error="uiState.defaultAvatar = true"
-                       :src="`${axios.defaults.baseURL}account/${account.id}/avatar`"
-                       class="w-100 h-100 unselectable"
+            <v-avatar class="material-avatar unselectable" size="48">
+                <v-img :src="`${axios.defaults.baseURL}account/${account.id}/avatar`"
+                       class="w-100 h-100"
                        draggable="false">
+                    <template v-slot:placeholder>
+                        <span class="material-symbols-rounded material-avatar text-black">
+                            account_circle
+                        </span>
+                    </template>
                 </v-img>
-                <span v-else
-                      class="material-symbols-rounded material-avatar text-black">
-                    account_circle
-                </span>
-
             </v-avatar>
-
         </template>
 
     </v-list-item>

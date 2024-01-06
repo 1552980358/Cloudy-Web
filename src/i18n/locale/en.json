@@ -51,5 +51,114 @@
                 }
             }
         }
+    },
+    "setup": {
+        "title": "Setup",
+        "secret": {
+            "title": "Setup Secret",
+            "text": "To continue, verify you are the owner.",
+            "label": "Enter setup secret",
+            "tooltip": {
+                "text": "Defined with environmental variable ",
+                "environment-variable": "CLOUDY_SETUP_SECRET"
+            },
+            "next": "Next",
+            "error": {
+                "connection": "Connection error occurred.",
+                "response": {
+                    "unauthorized": "Invalid setup secret (401)",
+                    "method-not-allowed": "Setup is banned (405)"
+                }
+            }
+        },
+        "config-owner": {
+            "title": "Configure Owner Account",
+            "nickname": {
+                "text": "How should I call you?",
+                "label": "Nickname",
+                "next": "Next"
+            },
+            "identity": {
+                "title": "Hi {nickname}",
+                "text": "Create unique identifier as login credential identity",
+                "username": {
+                    "label": "Username",
+                    "hint": "You can use digits, letters, and symbols, like \"_\", \"-\", \".\"",
+                    "error": {
+                        "format": "Invalid username format"
+                    }
+                },
+                "email": {
+                    "label": "Email",
+                    "hint": "You can also use your email address as account identifier",
+                    "error": {
+                        "format": "Invalid email format"
+                    }
+                },
+                "next": "Next"
+            },
+            "password": {
+                "title": "Create password",
+                "text": "Create a string password with a mix of letters, numbers, and symbols.",
+                "password": {
+                    "label": "Password",
+                    "hint": "Use 8 ~ 16 characters with a mix of letters, numbers, and symbols.",
+                    "error": {
+                        "length": "Invalid password length (8 ~ 16)",
+                        "format": "Mix of letters and numbers are required",
+                        "symbol": "Invalid symbol(s) contained"
+                    }
+                },
+                "confirm": {
+                    "label": "Confirm password",
+                    "hint": "Repeat above password.",
+                    "error": {
+                        "match": "Those passwords did not match."
+                    }
+                },
+                "next": "Next"
+            },
+            "avatar": {
+                "title": "Upload an avatar",
+                "dialog": {
+                    "title": "Crop your avatar",
+                    "button": {
+                        "cancel": "Cancel",
+                        "proceed": "Proceed"
+                    }
+                },
+                "button": {
+                    "upload": "Upload",
+                    "reset": "Reset",
+                    "next": "Next"
+                }
+            },
+            "upload": {
+                "uploading": {
+                    "title": "Please wait...",
+                    "text": "Configuration uploading to server"
+                },
+                "error": {
+                    "title": "Error occurred",
+                    "text": "Configuration upload failed with error",
+                    "retry": "Retry",
+                    "error": {
+                        "connection": "Connection error occurred.",
+                        "response": {
+                            "bad-request": "Invalid request (400)",
+                            "unauthorized": "@:setup.secret.error.response.unauthorized",
+                            "forbidden": "Owner has set already (403)",
+                            "method-not-allowed": "@:setup.secret.error.response.method-not-allowed",
+                            "internal-server-error": "Server Internal Error (500)"
+                        }
+                    }
+                },
+                "success": {
+                    "title": "Success",
+                    "text": "Configuration uploaded successfully"
+                },
+                "login": "Go to Login"
+            }
+        }
     }
 }

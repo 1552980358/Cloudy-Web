@@ -4,6 +4,7 @@ import {computed, inject, onMounted, reactive, ref} from 'vue'
 import ConfigOwnerState from '../../setup-config-owner-state'
 import {CircleStencil, Cropper, Preview} from 'vue-advanced-cropper'
 import SetupConfigOwnerPanel from '@/router/route/setup/component/config-owner/setup-config-owner-panel'
+import MaterialSymbols from '@/material-symbols/MaterialSymbols.vue'
 
 const configOwnerUiState = inject(ConfigOwnerState.uiState)
 const fields = inject(ConfigOwnerState.fields)
@@ -82,9 +83,7 @@ const onNextClick = () => {
                        class="w-100 h-100"
                        draggable="false">
                     <template v-slot:placeholder>
-                        <span class="material-symbols-rounded">
-                            account_circle
-                        </span>
+                        <material-symbols>account_circle</material-symbols>
                     </template>
                 </v-img>
             </v-avatar>
@@ -96,7 +95,7 @@ const onNextClick = () => {
                    variant="text">
 
                 <template v-slot:prepend>
-                    <span class="material-symbols-rounded">upload</span>
+                    <material-symbols>upload</material-symbols>>
                 </template>
 
                 <i18n-t keypath="setup.config-owner.avatar.button.upload"></i18n-t>
@@ -110,7 +109,7 @@ const onNextClick = () => {
                        variant="text">
 
                     <template v-slot:prepend>
-                        <span class="material-symbols-rounded">close</span>
+                        <material-symbols>close</material-symbols>
                     </template>
 
                     <i18n-t keypath="setup.config-owner.avatar.button.reset"></i18n-t>

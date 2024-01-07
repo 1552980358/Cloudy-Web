@@ -4,6 +4,7 @@ import {inject, reactive} from 'vue'
 import State from '../../setup-state'
 import AxiosRequest from '@/axios/axios-request'
 import SetupPanel from '@/router/route/setup/setup-panel'
+import MaterialSymbols from '@/material-symbols/MaterialSymbols.vue'
 
 const setupUiState = inject(State.uiState)
 const setupSecret = inject(State.secret)
@@ -83,26 +84,26 @@ const onVerifySetupSecret = () => {
             </template>
 
             <template v-slot:prepend-inner>
-                <span class="material-symbols-rounded">lock</span>
+                <material-symbols>lock</material-symbols>
             </template>
 
             <template v-slot:append-inner>
                 <v-btn @click="uiState.secretVisibility = !uiState.secretVisibility"
                        color="onSurface"
-                       icon
+                       icon=""
                        variant="text">
-                    <span class="material-symbols-rounded">
+                    <material-symbols>
                         {{ uiState.secretVisibility ? 'visibility_off' : 'visibility' }}
-                    </span>
+                    </material-symbols>
                 </v-btn>
             </template>
 
             <template v-slot:append>
                 <v-btn color="onSurface"
-                       icon
+                       icon=""
                        variant="text">
 
-                    <span class="material-symbols-rounded">info</span>
+                    <material-symbols>info</material-symbols>
 
                     <v-tooltip activator="parent"
                                location="bottom">

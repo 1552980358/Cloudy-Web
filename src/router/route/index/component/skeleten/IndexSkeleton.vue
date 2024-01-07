@@ -5,6 +5,7 @@ import axios from 'axios'
 import GlobalState from '@/util/global-state'
 import { IndexUiState } from '../../index-state'
 import IndexPanel from '../../index-panel'
+import MaterialSymbols from '@/material-symbols/MaterialSymbols.vue'
 
 const authorizationState = inject(GlobalState.authorization)
 const account = inject(GlobalState.account)
@@ -50,14 +51,11 @@ if (!authorizationState.isCompleted) {
                  lines="two">
 
         <template v-slot:prepend>
-            <v-avatar class="material-avatar unselectable" size="48">
+            <v-avatar class="unselectable" size="48">
                 <v-img :src="`${axios.defaults.baseURL}account/${account.id}/avatar`"
-                       class="w-100 h-100"
                        draggable="false">
                     <template v-slot:placeholder>
-                        <span class="material-symbols-rounded material-avatar">
-                            account_circle
-                        </span>
+                        <material-symbols size="avatar">account_circle</material-symbols>
                     </template>
                 </v-img>
             </v-avatar>

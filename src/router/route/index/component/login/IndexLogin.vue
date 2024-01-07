@@ -9,6 +9,7 @@ import AxiosAuthorization from '@/axios/axios-authorization'
 import GlobalState from '@/util/global-state'
 import AxiosRequest from '@/axios/axios-request'
 import IndexLoginPanel from './index-login-panel'
+import MaterialSymbols from '@/material-symbols/MaterialSymbols.vue'
 
 const  {t} = useI18n()
 
@@ -182,7 +183,7 @@ const accountLogin = () => {
                     <v-btn @click="uiState.panel = 0"
                            icon=""
                            variant="text">
-                        <span class="material-symbols-rounded">arrow_back</span>
+                        <material-symbols>arrow_back</material-symbols>
                     </v-btn>
                 </template>
 
@@ -209,14 +210,12 @@ const accountLogin = () => {
                         </template>
 
                         <template v-slot:prepend>
-                            <v-avatar class="material-avatar unselectable">
+                            <v-avatar class="unselectable">
                                 <v-img :src="`${axios.defaults.baseURL}account/${accountMetadata.id}/avatar`"
                                        class="w-100 h-100"
                                        draggable="false">
                                     <template v-slot:placeholder>
-                                        <span class="material-symbols-rounded material-avatar">
-                                            account_circle
-                                        </span>
+                                        <material-symbols size="avatar">account_circle</material-symbols>
                                     </template>
                                 </v-img>
                             </v-avatar>
@@ -253,9 +252,9 @@ const accountLogin = () => {
                                color="onSurface"
                                icon=""
                                variant="text">
-                            <span class="material-symbols-rounded">
+                            <material-symbols>
                                 {{ uiState.password.visibility ? 'visibility_off' : 'visibility' }}
-                            </span>
+                            </material-symbols>
                         </v-btn>
                     </template>
 
@@ -270,7 +269,7 @@ const accountLogin = () => {
 
                             <template v-slot:activator="{props}">
                                 <a v-bind="props" class="text-center ms-1 my-auto material-icon">
-                                    <span class="material-symbols-rounded">info</span>
+                                    <material-symbols>info</material-symbols>
                                 </a>
                             </template>
 
@@ -311,10 +310,9 @@ const accountLogin = () => {
 
                                             <template v-slot:prepend>
                                                 <v-expand-x-transition>
-                                                    <span v-if="fields.duration.selection == index"
-                                                          class="material-symbols-rounded">
-                                                        check
-                                                    </span>
+                                                    <material-symbols v-if="fields.duration.selection == index"
+                                                                      icon="check">
+                                                    </material-symbols>
                                                 </v-expand-x-transition>
                                             </template>
 

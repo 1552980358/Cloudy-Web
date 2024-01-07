@@ -5,6 +5,7 @@ import SetupState from '@/router/route/setup/setup-state'
 import SetupSecret from './component/secret/SetupSecret.vue'
 import SetupConfigOwner from './component/config-owner/SetupConfigOwner.vue'
 import SetupPanel from '@/router/route/setup/setup-panel'
+import MaterialSymbols from '@/material-symbols/MaterialSymbols.vue'
 
 const setupSecret = ref<string>()
 provide(SetupState.secret, setupSecret)
@@ -24,7 +25,7 @@ provide(SetupState.uiState, uiState)
         <v-app-bar>
 
             <v-app-bar-nav-icon>
-                <span class="material-symbols-rounded">settings</span>
+                <material-symbols>settings</material-symbols>
             </v-app-bar-nav-icon>
 
             <v-toolbar-title class="unselectable">

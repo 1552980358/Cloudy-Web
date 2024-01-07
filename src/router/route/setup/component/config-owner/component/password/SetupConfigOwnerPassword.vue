@@ -3,6 +3,7 @@
 import {inject, onMounted, reactive, ref} from 'vue'
 import ConfigOwnerState from '../../setup-config-owner-state'
 import SetupConfigOwnerPanel from '@/router/route/setup/component/config-owner/setup-config-owner-panel'
+import MaterialSymbols from '@/material-symbols/MaterialSymbols.vue'
 
 const setupConfigOwnerUiState = inject(ConfigOwnerState.uiState)
 
@@ -83,11 +84,11 @@ const onConfirmEnter = onNextClick
             <template v-slot:append-inner>
                 <v-btn @click="uiState.visibility.password = !uiState.visibility.password"
                        color="onSurface"
-                       icon
+                       icon=""
                        variant="text">
-                    <span class="material-symbols-rounded">
+                    <material-symbols>
                         {{ uiState.visibility.password ? 'visibility_off' : 'visibility' }}
-                    </span>
+                    </material-symbols>
                 </v-btn>
             </template>
 
@@ -113,11 +114,11 @@ const onConfirmEnter = onNextClick
             <template v-slot:append-inner>
                 <v-btn @click="uiState.visibility.confirm = !uiState.visibility.confirm"
                        color="onSurface"
-                       icon
+                       icon=""
                        variant="text">
-                    <span class="material-symbols-rounded">
+                    <material-symbols>
                         {{ uiState.visibility.confirm ? 'visibility_off' : 'visibility' }}
-                    </span>
+                    </material-symbols>
                 </v-btn>
             </template>
 

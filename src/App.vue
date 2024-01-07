@@ -1,22 +1,22 @@
 <script setup lang="ts">
 
 import {provide, reactive} from 'vue'
-import {Account, AuthorizationState} from '@/util/global-state'
+import GlobalState from '@/util/global-state'
 import AccountCredential from '@/storage/account-credential'
 import AxiosRequest from '@/axios/axios-request'
 import AxiosAuthorization from '@/axios/axios-authorization'
 
-const authorizationState = reactive({
+const authorization = reactive({
     isCompleted: false,
     isAuthorized: false
 })
-provide(AuthorizationState, authorizationState)
+provide(GlobalState.authorization, authorization)
 const account = reactive({
     id: null as string | null,
     username: null as string | null,
     nickname: null as string | null,
 })
-provide(Account, account)
+provide(GlobalState.account, account)
 
 const clearToken = () => {
     if (!!accountCredential.token) {
@@ -29,7 +29,7 @@ const accountLoginOrComplete = (allowRequest: boolean, allowLogin: boolean) => {
         accountLogin(allowRequest, false)
     } else {
         clearToken()
-        authorizationState.isCompleted = true
+        authorization.isCompleted = true
     }
 }
 
@@ -45,7 +45,7 @@ const accountLogin = (allowRequest: boolean, allowLogin: boolean) => {
                 switch (error.response.status) {
                     case 401: {
                         clearToken()
-                        authorizationState.isCompleted = true
+                        authorization.isCompleted = true
                         break
                     }
                     case 500: {
@@ -62,7 +62,7 @@ const requestAccountMetadataOrComplete = (token: string, allowRequest: boolean, 
         requestAccountMetadata(token, false, allowLogin)
     } else {
         clearToken()
-        authorizationState.isCompleted = true
+        authorization.isCompleted = true
     }
 }
 const requestAccountMetadata = (token: string, allowRequest = false, allowLogin = false) => {
@@ -72,8 +72,8 @@ const requestAccountMetadata = (token: string, allowRequest = false, allowLogin 
             account.id = accountResponse.id
             account.nickname = accountResponse.nickname
             account.username = accountResponse.username
-            authorizationState.isAuthorized = true
-            authorizationState.isCompleted = true
+            authorization.isAuthorized = true
+            authorization.isCompleted = true
         })
         .catch((error) => {
             if (!error.response) {

@@ -6,14 +6,14 @@ import AccountCredential from '@/storage/account-credential'
 import {IndexUiState} from '../../index-state'
 import axios from 'axios'
 import AxiosAuthorization from '@/axios/axios-authorization'
-import {Account, AuthorizationState} from '@/util/global-state'
+import GlobalState from '@/util/global-state'
 import AxiosRequest from '@/axios/axios-request'
 import IndexLoginPanel from './index-login-panel'
 
 const  {t} = useI18n()
 
-const authorizationState = inject(AuthorizationState)
-const account = inject(Account)
+const authorization = inject(GlobalState.authorization)
+const account = inject(GlobalState.account)
 
 const indexUiState = inject(IndexUiState)
 
@@ -92,7 +92,7 @@ const accountLogin = () => {
                 } else {
                     accountCredential.setCredential(token, fields.identity, fields.password)
                 }
-                authorizationState.isAuthorized = true
+                authorization.isAuthorized = true
                 indexUiState.isLoading = false
                 // TODO: Route to home
             })
@@ -180,7 +180,7 @@ const accountLogin = () => {
 
                 <template v-slot:prepend>
                     <v-btn @click="uiState.panel = 0"
-                           icon
+                           icon=""
                            variant="text">
                         <span class="material-symbols-rounded">arrow_back</span>
                     </v-btn>
@@ -251,7 +251,7 @@ const accountLogin = () => {
                         <v-btn v-show="!!fields.password"
                                @click="uiState.password.visibility = !uiState.password.visibility"
                                color="onSurface"
-                               icon
+                               icon=""
                                variant="text">
                             <span class="material-symbols-rounded">
                                 {{ uiState.password.visibility ? 'visibility_off' : 'visibility' }}

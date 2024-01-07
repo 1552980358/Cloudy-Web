@@ -1,13 +1,13 @@
 <script setup lang="ts">
 
 import {inject, watch} from 'vue'
-import {IndexUiState} from '../../index-state'
 import axios from 'axios'
-import {Account, AuthorizationState} from '@/util/global-state'
-import IndexPanel from '@/router/route/index/index-panel'
+import GlobalState from '@/util/global-state'
+import {IndexUiState} from '../../index-state'
+import IndexPanel from '../../index-panel'
 
-const authorizationState = inject(AuthorizationState)
-const account = inject(Account)
+const authorizationState = inject(GlobalState.authorization)
+const account = inject(GlobalState.account)
 
 const indexUiState = inject(IndexUiState)
 

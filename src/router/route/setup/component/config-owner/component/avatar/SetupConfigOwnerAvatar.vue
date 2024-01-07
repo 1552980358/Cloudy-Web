@@ -82,7 +82,7 @@ const onNextClick = () => {
                        class="w-100 h-100"
                        draggable="false">
                     <template v-slot:placeholder>
-                        <span class="material-symbols-rounded text-black">
+                        <span class="material-symbols-rounded">
                             account_circle
                         </span>
                     </template>

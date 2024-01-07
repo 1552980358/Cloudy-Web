@@ -214,7 +214,7 @@ const accountLogin = () => {
                                        class="w-100 h-100"
                                        draggable="false">
                                     <template v-slot:placeholder>
-                                        <span class="material-symbols-rounded text-black material-avatar">
+                                        <span class="material-symbols-rounded material-avatar">
                                             account_circle
                                         </span>
                                     </template>

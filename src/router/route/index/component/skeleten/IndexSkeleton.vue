@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
-import {inject, watch} from 'vue'
+import { inject, watch } from 'vue'
 import axios from 'axios'
 import GlobalState from '@/util/global-state'
-import {IndexUiState} from '../../index-state'
+import { IndexUiState } from '../../index-state'
 import IndexPanel from '../../index-panel'
 
 const authorizationState = inject(GlobalState.authorization)
@@ -55,7 +55,7 @@ if (!authorizationState.isCompleted) {
                        class="w-100 h-100"
                        draggable="false">
                     <template v-slot:placeholder>
-                        <span class="material-symbols-rounded material-avatar text-black">
+                        <span class="material-symbols-rounded material-avatar">
                             account_circle
                         </span>
                     </template>

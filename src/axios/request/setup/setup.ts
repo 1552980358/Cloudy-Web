@@ -1,5 +1,5 @@
-import Owner from '@/axios/request/setup/owner/owner'
-import {setupGet} from '@/axios/request/setup/setup-get'
+import Owner from './owner/owner.ts'
+import {setupGet} from './setup-get.ts'
 
 export default class Setup {
 

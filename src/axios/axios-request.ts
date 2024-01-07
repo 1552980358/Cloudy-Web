@@ -1,6 +1,6 @@
-import Account from './request/account/account'
-import Auth from './request/auth/auth'
-import Setup from '@/axios/request/setup/setup'
+import Account from './request/account/account.ts'
+import Auth from './request/auth/auth.ts'
+import Setup from './request/setup/setup.ts'
 
 export default class AxiosRequest {
 

@@ -1,5 +1,5 @@
-import accountGet from './account-get'
-import Find from './find/find'
+import accountGet from './account-get.ts'
+import Find from './find/find.ts'
 
 export default class Account {
 

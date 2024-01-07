@@ -1,4 +1,4 @@
-import {authPost} from '@/axios/request/auth/auth-post'
+import {authPost} from './auth-post.ts'
 
 export default class Auth {
 

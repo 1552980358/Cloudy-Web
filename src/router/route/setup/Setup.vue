@@ -3,8 +3,8 @@
 import {provide, reactive, ref} from 'vue'
 import SetupState from '@/router/route/setup/setup-state'
 import SetupSecret from './component/secret/SetupSecret.vue'
+import SetupConfigOwner from './component/config-owner/SetupConfigOwner.vue'
 import SetupPanel from '@/router/route/setup/setup-panel'
-import SetupConfigOnwer from '@/router/route/setup/component/config-owner/SetupConfigOwner.vue'
 
 const setupSecret = ref<string>()
 provide(SetupState.secret, setupSecret)
@@ -44,7 +44,7 @@ provide(SetupState.uiState, uiState)
 
                     <v-fade-transition>
                         <setup-secret v-if="uiState.panel == SetupPanel.Secret"></setup-secret>
-                        <setup-config-onwer v-else-if="uiState.panel == SetupPanel.ConfigOwner"></setup-config-onwer>
+                        <setup-config-owner v-else-if="uiState.panel == SetupPanel.ConfigOwner"></setup-config-owner>
                     </v-fade-transition>
 
                 </v-card>

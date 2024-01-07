@@ -1,4 +1,4 @@
-import LocalStorage from '@/storage/local-storage'
+import LocalStorage from './local-storage.ts'
 
 class AccountCredentialStorage extends LocalStorage<AccountCredential> {
 

@@ -1,4 +1,4 @@
-import findGet from './find-get'
+import findGet from './find-get.ts'
 
 export default class Find {
 

@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "ESNext",
+    "moduleResolution": "Node16",
+    "allowImportingTsExtensions": true,
     "paths": {
       "@/*": [
         "./src/*"

@@ -5,8 +5,8 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 
-import light from './vuetify-theme-light'
-import dark from '@/vuetify/vuetify-theme-dark'
+import light from './theme/vuetify-theme-light.ts'
+import dark from './theme/vuetify-theme-dark.ts'
 
 export const LightTheme = 'light'
 export const DarkTheme = 'dark'

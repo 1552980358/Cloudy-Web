@@ -1,5 +1,5 @@
-import {ownerPost} from '@/axios/request/setup/owner/owner-post'
-import {ownerGet} from '@/axios/request/setup/owner/owner-get'
+import {ownerPost} from './owner-post.ts'
+import {ownerGet} from './owner-get.ts'
 
 export default class Owner {
 

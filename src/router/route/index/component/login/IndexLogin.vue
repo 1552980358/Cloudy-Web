@@ -42,7 +42,7 @@ const fields = reactive({
 const durationList = [1, 3, 7, 15, 30, 180, 365]
 
 const accountMetadata = reactive({
-    id: null, nickname: null,
+    id: null, username: null, nickname: null,
 })
 
 const requestAccountMetadata = () => {
@@ -52,6 +52,7 @@ const requestAccountMetadata = () => {
         AxiosRequest.account.find.get(fields.identity)
             .then((responseBody) => {
                 accountMetadata.id = responseBody.id
+                accountMetadata.username = responseBody.username
                 accountMetadata.nickname = responseBody.nickname
                 uiState.error.identity = null
                 indexUiState.isLoading = false
@@ -82,16 +83,20 @@ const accountLogin = () => {
         indexUiState.isLoading = true
 
         const duration = fields.duration.onetime ? durationList[fields.duration.selection] * 24 * 60 * 60 : null
-        AxiosRequest.auth.post(fields.identity, fields.password, duration)
+        AxiosRequest.auth.post(accountMetadata.username, fields.password, duration)
             .then((token) => {
                 AxiosAuthorization.setToken(token)
                 account.id = accountMetadata.id
-                account.username = fields.identity
+                account.username = accountMetadata.username
                 account.nickname = accountMetadata.nickname
                 if (fields.duration.onetime) {
                     accountCredential.token = token
                 } else {
-                    accountCredential.setCredential(token, fields.identity, fields.password)
+                    accountCredential.setCredential(
+                        token,
+                        accountMetadata.username,
+                        fields.password
+                    )
                 }
                 authorization.isAuthorized = true
                 indexUiState.isLoading = false
@@ -206,7 +211,7 @@ const accountLogin = () => {
                         </template>
 
                         <template v-slot:subtitle>
-                            @{{ fields.identity }}
+                            @{{ accountMetadata.username }}
                         </template>
 
                         <template v-slot:prepend>

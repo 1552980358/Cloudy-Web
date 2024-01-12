@@ -217,7 +217,6 @@ const accountLogin = () => {
                         <template v-slot:prepend>
                             <v-avatar class="unselectable">
                                 <v-img :src="`${axios.defaults.baseURL}account/${accountMetadata.id}/avatar`"
-                                       class="w-100 h-100"
                                        draggable="false">
                                     <template v-slot:placeholder>
                                         <material-symbols size="avatar">account_circle</material-symbols>

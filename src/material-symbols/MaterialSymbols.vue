@@ -2,7 +2,7 @@
 
 import {computed, PropType} from 'vue'
 
-type Size = Number | 'icon' | 'avatar'
+type Size = Number | 'icon' | 'avatar' | 'avatar-large'
 type Variant = 'filled' | 'outlined' | 'rounded'
 
 const props = defineProps({
@@ -22,10 +22,26 @@ const spanClass = computed(() => {
 })
 
 const fontSize = computed(() => {
-    const propSize = props.size
-    const size = propSize == 'icon' ? 24 : propSize == 'avatar' ? 48 : propSize
+    const size = getIconSize(props.size)
     return `${size}px`
 })
+
+const getIconSize = (size: string | Number) => {
+    switch (size) {
+        case 'icon': {
+            return 24
+        }
+        case 'avatar': {
+            return 40
+        }
+        case 'avatar-large': {
+            return 48
+        }
+        default: {
+            return size
+        }
+    }
+}
 
 </script>
 

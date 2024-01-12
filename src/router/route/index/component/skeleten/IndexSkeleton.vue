@@ -51,7 +51,7 @@ if (!authorizationState.isCompleted) {
                  lines="two">
 
         <template v-slot:prepend>
-            <v-avatar class="unselectable" size="48">
+            <v-avatar class="unselectable">
                 <v-img :src="`${axios.defaults.baseURL}account/${account.id}/avatar`"
                        draggable="false">
                     <template v-slot:placeholder>

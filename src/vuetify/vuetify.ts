@@ -3,7 +3,6 @@ import { createVuetify } from 'vuetify';
 import { md3 } from 'vuetify/blueprints';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import '@mdi/font/css/materialdesignicons.css';
 import VuetifyTheme from '@/vuetify/theme/vuetify-theme.ts';
 
 export default createVuetify({

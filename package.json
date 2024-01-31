@@ -9,6 +9,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@material-symbols/font-400": "^0.14.6",
         "vue": "^3.4.15",
         "vue-i18n": "^9.9.1",
         "vue-router": "^4.2.5",

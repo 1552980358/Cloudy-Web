@@ -6,6 +6,8 @@ import Vuetify from '@/vuetify/vuetify.ts';
 import VueI18n, { setupVueI18n } from '@/vue-i18n/vue-i18n.ts';
 import '@/material-symbols/material-symbols.ts';
 
+import '@/assets/css/index.css';
+
 // Setup VueI18n before navigation
 VueRouter.beforeEach(setupVueI18n);
 

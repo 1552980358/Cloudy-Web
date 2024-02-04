@@ -12,5 +12,13 @@ export default createVuetify({
     theme: {
         defaultTheme: VuetifyTheme.default,
         themes: VuetifyTheme.themes
+    },
+    defaults: {
+        VTextField: {
+            'base-color': 'outline',
+            'color': 'primary',
+            'hide-details': 'auto',
+            'variant': 'outlined',
+        }
     }
 })

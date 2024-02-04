@@ -3,12 +3,17 @@
 import { computed, PropType } from 'vue';
 
 type Size = 'icon' | 'avatar' | 'image';
+type Color = string | 'on-surface';
 
 const props = defineProps({
     icon: String,
     size: {
         type: String as PropType<Size>,
         default: 'icon'
+    },
+    color: {
+        type: String as PropType<Color>,
+        default: 'on-surface',
     },
     fill: {
         type: Boolean,
@@ -36,10 +41,15 @@ const fill = computed(() => {
     return props.fill ? 1 : 0;
 });
 
+const color = computed(() => {
+    return props.color
+})
+
 </script>
 
 <template>
-    <span class="material-symbols-rounded">
+    <span :class="`text-${color}`"
+          class="material-symbols-rounded">
         <slot>{{ props.icon }}</slot>
     </span>
 </template>

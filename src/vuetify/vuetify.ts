@@ -17,7 +17,7 @@ export default createVuetify({
         VTextField: {
             'base-color': 'outline',
             'color': 'primary',
-            'hide-details': 'auto',
+            'hideDetails': 'auto',
             'variant': 'outlined',
         }
     }

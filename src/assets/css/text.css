@@ -6,3 +6,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
 }
+
+.text-transform-none {
+    text-transform: none;
+}

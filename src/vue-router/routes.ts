@@ -7,6 +7,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/app/setup/Setup.vue'),
         redirect: { name: 'Secret' },
         children: [
+            {
+                name: 'Secret',
+                path: 'secret',
+                component: () => import('@/app/setup/secret/Secret.vue'),
+            },
         ],
     },
 ];

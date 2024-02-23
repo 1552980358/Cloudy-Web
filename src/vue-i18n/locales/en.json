@@ -1,5 +1,26 @@
 {
     "setup": {
-        "title": "Setup Configuration"
+        "title": "Setup Configuration",
+        "secret": {
+            "title": "Setup Permission Verification",
+            "content": "Before setup, verify you have permission.",
+            "field": {
+                "label": "Enter setup secret",
+                "hint": "Setup configuration can be banned by not setting up secret",
+                "tooltip": "It is defined as startup environmental variable "
+            },
+            "error": {
+                "internal": "Client internal error",
+                "connection": "Connection error occurs",
+                "response": {
+                    "401": "401: Invalid setup secret",
+                    "405": "405: Setup configuration is banned",
+                    "unknown": "Unknown response code"
+                }
+            },
+            "button": {
+                "verify": "Verify"
+            }
+        }
     }
 }
